@@ -1,4 +1,6 @@
-# Sistema de Gerenciamento de Artistas e Álbuns
+![CI](https://github.com/PedroAMDC/music-catalog/actions/workflows/ci.yml/badge.svg)
+
+# Sistema de Gerenciamento de Artistas e Albuns
 
 ## Dados de Inscrição
 
