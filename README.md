@@ -205,14 +205,47 @@ npm test
 
 ## Commits
 
-Este projeto segue o padrão de commits semânticos:
+Este projeto segue o padrao de **commits semanticos** para manter um historico claro e consistente.
 
-- `feat:` nova funcionalidade
-- `fix:` correção de bug
-- `chore:` tarefas administrativas
-- `docs:` documentação
-- `test:` testes
-- `refactor:` refatoração
+### Formato da Mensagem
+
+```
+<tipo>: <descricao>
+```
+
+**Regras:**
+- Mensagens sempre em **ingles**
+- Usar verbo no **imperativo** (add, fix, update, remove)
+- Maximo de **72 caracteres** na primeira linha
+- Descricao clara e objetiva do que foi alterado
+
+### Tipos de Commit
+
+| Tipo | Descricao | Exemplo |
+|------|-----------|---------|
+| `feat:` | Nova funcionalidade | `feat: add artist image upload endpoint` |
+| `fix:` | Correcao de bug | `fix: resolve album pagination returning wrong count` |
+| `chore:` | Tarefas administrativas | `chore: update quarkus dependencies to 3.17` |
+| `docs:` | Documentacao | `docs: add commit guidelines to README` |
+| `test:` | Adicao ou modificacao de testes | `test: add unit tests for ArtistaService` |
+| `refactor:` | Refatoracao sem mudanca de comportamento | `refactor: extract validation logic to separate class` |
+
+### Convencao de Branches
+
+| Padrao | Uso | Exemplo |
+|--------|-----|---------|
+| `feature/T0XX-description` | Novas funcionalidades | `feature/T015-add-album-search` |
+| `fix/T0XX-description` | Correcoes de bugs | `fix/T023-pagination-offset` |
+
+### Git Flow
+
+```
+feature/* ou fix/*  -->  develop  -->  main
+```
+
+- **develop:** Branch principal de desenvolvimento
+- **main:** Branch de producao (releases estaveis)
+- Todas as features e fixes devem ser mergeadas via **Pull Request**
 
 ---
 
