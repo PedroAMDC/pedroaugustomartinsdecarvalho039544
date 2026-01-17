@@ -249,6 +249,18 @@ feature/* ou fix/*  -->  develop  -->  main
 
 ---
 
+## Metodologia
+
+Este projeto foi desenvolvido seguindo praticas ageis:
+
+- **Kanban Board:** Backlog organizado em [GitHub Projects](../../projects) com colunas To Do, In Progress e Done
+- **Tasks incrementais:** Cada funcionalidade foi quebrada em tasks pequenas e bem definidas com criterios de aceite claros
+- **Commits semanticos:** Historico de commits organizado e descritivo
+- **Feature branches:** Cada task desenvolvida em branch isolada com merge via Pull Request
+- **Testes obrigatorios:** Cobertura de testes unitarios como requisito para conclusao de tasks
+
+---
+
 ## Licença
 
 Este projeto foi desenvolvido como parte do Processo Seletivo Simplificado nº 001/2026/SEPLAG do Estado de Mato Grosso.
