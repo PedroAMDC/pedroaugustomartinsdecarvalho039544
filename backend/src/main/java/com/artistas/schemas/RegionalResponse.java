@@ -10,7 +10,7 @@ public class RegionalResponse {
 
     public static RegionalResponse of(Regional regional) {
         RegionalResponse response = new RegionalResponse();
-        response.id = regional.id;
+        response.id = regional.externalId;
         response.nome = regional.nome;
         response.ativo = regional.ativo;
         return response;
