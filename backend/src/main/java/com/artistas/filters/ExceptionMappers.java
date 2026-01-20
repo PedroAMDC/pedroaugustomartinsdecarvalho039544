@@ -4,6 +4,7 @@ import com.artistas.services.exceptions.AuthenticationException;
 import com.artistas.services.exceptions.ConflictException;
 import com.artistas.services.exceptions.InvalidTokenException;
 import com.artistas.services.exceptions.NotFoundException;
+import com.artistas.services.exceptions.RateLimitException;
 import com.artistas.services.exceptions.StorageException;
 import com.artistas.services.exceptions.ValidationException;
 import jakarta.ws.rs.core.Response;
@@ -51,6 +52,20 @@ public class ExceptionMappers {
     public Response mapStorageException(StorageException ex) {
         return Response.status(Response.Status.BAD_GATEWAY)
             .entity(Map.of("error", ex.getMessage()))
+            .build();
+    }
+
+    @ServerExceptionMapper
+    public Response mapRateLimitException(RateLimitException ex) {
+        return Response.status(429)
+            .header("Retry-After", ex.getRetryAfterSeconds())
+            .header("X-RateLimit-Limit", 10)
+            .header("X-RateLimit-Remaining", 0)
+            .entity(Map.of(
+                "error", "Too Many Requests",
+                "message", ex.getMessage(),
+                "retryAfter", ex.getRetryAfterSeconds()
+            ))
             .build();
     }
 }
