@@ -3,6 +3,8 @@ package com.artistas.models;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -15,8 +17,12 @@ import java.util.List;
 public class Regional extends PanacheEntityBase {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
+
     @NotNull
-    public Integer id;
+    @Column(name = "external_id", nullable = false)
+    public Integer externalId;
 
     @NotBlank
     @Size(max = 200)
@@ -26,20 +32,24 @@ public class Regional extends PanacheEntityBase {
     @Column(nullable = false)
     public Boolean ativo = true;
 
-    public static Regional create(Integer id, String nome) {
+    public static Regional create(Integer externalId, String nome) {
         Regional regional = new Regional();
-        regional.id = id;
+        regional.externalId = externalId;
         regional.nome = nome;
         regional.ativo = true;
         return regional;
     }
 
-    public static Regional create(Integer id, String nome, Boolean ativo) {
+    public static Regional create(Integer externalId, String nome, Boolean ativo) {
         Regional regional = new Regional();
-        regional.id = id;
+        regional.externalId = externalId;
         regional.nome = nome;
         regional.ativo = ativo;
         return regional;
+    }
+
+    public static Regional findByExternalId(Integer externalId) {
+        return find("externalId = ?1 and ativo = true", externalId).firstResult();
     }
 
     public static Regional findByNome(String nome) {
@@ -48,5 +58,9 @@ public class Regional extends PanacheEntityBase {
 
     public static List<Regional> findAllAtivos() {
         return list("ativo", true);
+    }
+
+    public static List<Regional> findByExternalIdAll(Integer externalId) {
+        return list("externalId", externalId);
     }
 }
