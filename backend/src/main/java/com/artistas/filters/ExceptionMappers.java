@@ -4,6 +4,7 @@ import com.artistas.services.exceptions.AuthenticationException;
 import com.artistas.services.exceptions.ConflictException;
 import com.artistas.services.exceptions.InvalidTokenException;
 import com.artistas.services.exceptions.NotFoundException;
+import com.artistas.services.exceptions.StorageException;
 import com.artistas.services.exceptions.ValidationException;
 import jakarta.ws.rs.core.Response;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
@@ -42,6 +43,13 @@ public class ExceptionMappers {
     @ServerExceptionMapper
     public Response mapNotFoundException(NotFoundException ex) {
         return Response.status(Response.Status.NOT_FOUND)
+            .entity(Map.of("error", ex.getMessage()))
+            .build();
+    }
+
+    @ServerExceptionMapper
+    public Response mapStorageException(StorageException ex) {
+        return Response.status(Response.Status.BAD_GATEWAY)
             .entity(Map.of("error", ex.getMessage()))
             .build();
     }
