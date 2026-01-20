@@ -1,0 +1,22 @@
+package com.artistas.schemas;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public class RegisterRequest {
+
+    @NotBlank
+    @Email
+    public String email;
+
+    @NotBlank
+    @Size(min = 8, message = "Password must be at least 8 characters")
+    public String password;
+
+    @NotBlank
+    public String confirmPassword;
+
+    @NotBlank
+    public String nome;
+}
