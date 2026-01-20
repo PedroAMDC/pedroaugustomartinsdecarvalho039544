@@ -51,9 +51,22 @@ cd music-catalog
 # Copiar variáveis de ambiente
 cp .env.example .env
 
+# Gerar chaves RSA para JWT (obrigatorio para autenticacao)
+cd backend/src/main/resources
+openssl genrsa -out privateKey.pem 2048
+openssl rsa -in privateKey.pem -pubout -out publicKey.pem
+cd ../../../..
+
 # Executar todos os serviços
 docker-compose up --build
 ```
+
+> **Nota:** As chaves RSA (.pem) estao no .gitignore por seguranca. Arquivos de exemplo (.example.pem) sao fornecidos para referencia. Para desenvolvimento rapido, voce pode copiar os arquivos de exemplo:
+> ```bash
+> cd backend/src/main/resources
+> cp privateKey.example.pem privateKey.pem
+> cp publicKey.example.pem publicKey.pem
+> ```
 
 ### URLs dos Serviços
 
