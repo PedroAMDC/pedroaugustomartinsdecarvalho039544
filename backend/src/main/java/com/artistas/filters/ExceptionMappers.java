@@ -2,6 +2,7 @@ package com.artistas.filters;
 
 import com.artistas.services.exceptions.AuthenticationException;
 import com.artistas.services.exceptions.ConflictException;
+import com.artistas.services.exceptions.InvalidTokenException;
 import com.artistas.services.exceptions.ValidationException;
 import jakarta.ws.rs.core.Response;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
@@ -26,6 +27,13 @@ public class ExceptionMappers {
     @ServerExceptionMapper
     public Response mapConflictException(ConflictException ex) {
         return Response.status(Response.Status.CONFLICT)
+            .entity(Map.of("error", ex.getMessage()))
+            .build();
+    }
+
+    @ServerExceptionMapper
+    public Response mapInvalidTokenException(InvalidTokenException ex) {
+        return Response.status(Response.Status.UNAUTHORIZED)
             .entity(Map.of("error", ex.getMessage()))
             .build();
     }
