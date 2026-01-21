@@ -107,14 +107,19 @@ public class AuthServiceTest {
     }
 
     @Test
-    void register_withValidData_shouldCreateUser() {
+    void register_withValidData_shouldCreateUserAndReturnToken() {
         RegisterRequest request = new RegisterRequest();
         request.email = TEST_EMAIL;
         request.password = TEST_PASSWORD;
         request.confirmPassword = TEST_PASSWORD;
         request.nome = TEST_NAME;
 
-        assertDoesNotThrow(() -> authService.register(request));
+        LoginResponse response = authService.register(request);
+
+        assertNotNull(response);
+        assertNotNull(response.token);
+        assertNotNull(response.refreshToken);
+        assertTrue(response.expiresIn > 0);
 
         Usuario usuario = Usuario.findByEmail(TEST_EMAIL);
         assertNotNull(usuario);
