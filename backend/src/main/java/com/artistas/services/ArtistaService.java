@@ -2,6 +2,7 @@ package com.artistas.services;
 
 import com.artistas.models.Artista;
 import com.artistas.models.TipoArtista;
+import com.artistas.schemas.ArtistaDetailResponse;
 import com.artistas.schemas.ArtistaListResponse;
 import com.artistas.schemas.ArtistaRequest;
 import com.artistas.schemas.ArtistaResponse;
@@ -54,6 +55,14 @@ public class ArtistaService {
             throw new NotFoundException("Artist not found");
         }
         return ArtistaResponse.of(artista);
+    }
+
+    public ArtistaDetailResponse findByIdWithAlbuns(Long id) {
+        Artista artista = Artista.findById(id);
+        if (artista == null) {
+            throw new NotFoundException("Artist not found");
+        }
+        return ArtistaDetailResponse.of(artista);
     }
 
     @Transactional
