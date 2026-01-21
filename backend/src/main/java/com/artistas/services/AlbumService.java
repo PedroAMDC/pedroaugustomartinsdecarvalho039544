@@ -6,17 +6,23 @@ import com.artistas.models.TipoArtista;
 import com.artistas.schemas.AlbumPaginatedResponse;
 import com.artistas.schemas.AlbumRequest;
 import com.artistas.schemas.AlbumResponse;
+import com.artistas.services.events.AlbumCreatedEvent;
 import com.artistas.services.exceptions.NotFoundException;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
 public class AlbumService {
+
+    @Inject
+    Event<AlbumCreatedEvent> albumCreatedEvent;
 
     public AlbumPaginatedResponse list(Integer page, Integer size, Long artistaId, TipoArtista tipoArtista, String sortDirection) {
         Sort sort = Sort.by("titulo");
@@ -77,7 +83,9 @@ public class AlbumService {
         }
 
         album.persist();
-        return AlbumResponse.of(album);
+        AlbumResponse response = AlbumResponse.of(album);
+        albumCreatedEvent.fire(new AlbumCreatedEvent(response));
+        return response;
     }
 
     @Transactional
