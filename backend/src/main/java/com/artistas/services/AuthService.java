@@ -49,7 +49,7 @@ public class AuthService {
     }
 
     @Transactional
-    public void register(RegisterRequest request) {
+    public LoginResponse register(RegisterRequest request) {
         if (!request.password.equals(request.confirmPassword)) {
             throw new ValidationException("Passwords do not match");
         }
@@ -60,5 +60,13 @@ public class AuthService {
 
         Usuario usuario = Usuario.create(request.email, request.password, request.nome);
         usuario.persist();
+
+        TokenPair tokenPair = tokenService.generateTokenPair(usuario);
+
+        return LoginResponse.of(
+            tokenPair.accessToken(),
+            tokenPair.expiresIn(),
+            tokenPair.refreshToken()
+        );
     }
 }
