@@ -6,6 +6,7 @@ import com.artistas.schemas.LoginResponse;
 import com.artistas.schemas.RegisterRequest;
 import com.artistas.services.exceptions.AuthenticationException;
 import com.artistas.services.exceptions.ConflictException;
+import com.artistas.services.exceptions.InvalidTokenException;
 import com.artistas.services.exceptions.ValidationException;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
@@ -20,6 +21,9 @@ public class AuthServiceTest {
 
     @Inject
     AuthService authService;
+
+    @Inject
+    TokenService tokenService;
 
     private static final String TEST_EMAIL = "test@example.com";
     private static final String TEST_PASSWORD = "password123";
@@ -162,5 +166,31 @@ public class AuthServiceTest {
         );
 
         assertEquals("Passwords do not match", exception.getMessage());
+    }
+
+    @Test
+    @Transactional
+    void refresh_withValidRefreshToken_shouldReturnLoginResponse() {
+        Usuario usuario = Usuario.create(TEST_EMAIL, TEST_PASSWORD, TEST_NAME);
+        usuario.persist();
+
+        String refreshToken = tokenService.generateRefreshToken(usuario);
+
+        LoginResponse response = authService.refresh(refreshToken);
+
+        assertNotNull(response);
+        assertNotNull(response.token);
+        assertNotNull(response.refreshToken);
+        assertTrue(response.expiresIn > 0);
+    }
+
+    @Test
+    void refresh_withInvalidToken_shouldThrowInvalidTokenException() {
+        InvalidTokenException exception = assertThrows(
+            InvalidTokenException.class,
+            () -> authService.refresh("invalid.token.here")
+        );
+
+        assertEquals("Invalid or expired token", exception.getMessage());
     }
 }
