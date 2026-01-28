@@ -2,6 +2,7 @@ package com.artistas.services;
 
 import com.artistas.models.Artista;
 import com.artistas.models.TipoArtista;
+import com.artistas.schemas.ArtistaDetailResponse;
 import com.artistas.schemas.ArtistaListResponse;
 import com.artistas.schemas.ArtistaRequest;
 import com.artistas.schemas.ArtistaResponse;
@@ -177,6 +178,32 @@ public class ArtistaServiceTest {
         NotFoundException exception = assertThrows(
             NotFoundException.class,
             () -> artistaService.update(999999L, request)
+        );
+
+        assertEquals("Artist not found", exception.getMessage());
+    }
+
+    @Test
+    @Transactional
+    void findByIdWithAlbuns_withExistingId_shouldReturnArtistaDetail() {
+        Artista artista = Artista.create(TEST_NOME_1, TipoArtista.CANTOR);
+        artista.persist();
+
+        ArtistaDetailResponse response = artistaService.findByIdWithAlbuns(artista.id);
+
+        assertNotNull(response);
+        assertEquals(artista.id, response.id);
+        assertEquals(TEST_NOME_1, response.nome);
+        assertEquals(TipoArtista.CANTOR, response.tipo);
+        assertNotNull(response.albuns);
+        assertTrue(response.albuns.isEmpty());
+    }
+
+    @Test
+    void findByIdWithAlbuns_withNonExistingId_shouldThrowNotFoundException() {
+        NotFoundException exception = assertThrows(
+            NotFoundException.class,
+            () -> artistaService.findByIdWithAlbuns(999999L)
         );
 
         assertEquals("Artist not found", exception.getMessage());
