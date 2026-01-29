@@ -60,7 +60,7 @@ class RateLimitFilterTest {
     @Test
     void checkRateLimit_shouldApplyToV1Endpoints() {
         when(requestContext.getUriInfo()).thenReturn(uriInfo);
-        when(uriInfo.getPath()).thenReturn("api/v1/artistas");
+        when(uriInfo.getPath()).thenReturn("v1/artistas");
         when(requestContext.getSecurityContext()).thenReturn(securityContext);
         when(securityContext.getUserPrincipal()).thenReturn(null);
         when(httpServerRequest.getHeader("X-Forwarded-For")).thenReturn(null);
@@ -80,7 +80,7 @@ class RateLimitFilterTest {
     @Test
     void checkRateLimit_shouldApplyToV1EndpointsWithLeadingSlash() {
         when(requestContext.getUriInfo()).thenReturn(uriInfo);
-        when(uriInfo.getPath()).thenReturn("/api/v1/albums");
+        when(uriInfo.getPath()).thenReturn("/v1/albuns");
         when(requestContext.getSecurityContext()).thenReturn(securityContext);
         when(securityContext.getUserPrincipal()).thenReturn(null);
         when(httpServerRequest.getHeader("X-Forwarded-For")).thenReturn(null);
@@ -119,7 +119,7 @@ class RateLimitFilterTest {
     @Test
     void checkRateLimit_shouldExtractUserIdFromJwt() {
         when(requestContext.getUriInfo()).thenReturn(uriInfo);
-        when(uriInfo.getPath()).thenReturn("api/v1/artistas");
+        when(uriInfo.getPath()).thenReturn("v1/artistas");
         when(requestContext.getSecurityContext()).thenReturn(securityContext);
         when(securityContext.getUserPrincipal()).thenReturn(jwt);
         when(jwt.getClaim("userId")).thenReturn(123L);
@@ -135,7 +135,7 @@ class RateLimitFilterTest {
     @Test
     void checkRateLimit_shouldFallbackToIpWhenNoJwt() {
         when(requestContext.getUriInfo()).thenReturn(uriInfo);
-        when(uriInfo.getPath()).thenReturn("api/v1/artistas");
+        when(uriInfo.getPath()).thenReturn("v1/artistas");
         when(requestContext.getSecurityContext()).thenReturn(securityContext);
         when(securityContext.getUserPrincipal()).thenReturn(null);
         when(httpServerRequest.getHeader("X-Forwarded-For")).thenReturn(null);
@@ -154,7 +154,7 @@ class RateLimitFilterTest {
     @Test
     void checkRateLimit_shouldUseXForwardedForHeader() {
         when(requestContext.getUriInfo()).thenReturn(uriInfo);
-        when(uriInfo.getPath()).thenReturn("api/v1/artistas");
+        when(uriInfo.getPath()).thenReturn("v1/artistas");
         when(requestContext.getSecurityContext()).thenReturn(securityContext);
         when(securityContext.getUserPrincipal()).thenReturn(null);
         when(httpServerRequest.getHeader("X-Forwarded-For")).thenReturn("203.0.113.195, 70.41.3.18, 150.172.238.178");
@@ -170,7 +170,7 @@ class RateLimitFilterTest {
     @Test
     void checkRateLimit_shouldThrowExceptionWhenLimitExceeded() {
         when(requestContext.getUriInfo()).thenReturn(uriInfo);
-        when(uriInfo.getPath()).thenReturn("api/v1/artistas");
+        when(uriInfo.getPath()).thenReturn("v1/artistas");
         when(requestContext.getSecurityContext()).thenReturn(securityContext);
         when(securityContext.getUserPrincipal()).thenReturn(null);
         when(httpServerRequest.getHeader("X-Forwarded-For")).thenReturn(null);
@@ -192,7 +192,7 @@ class RateLimitFilterTest {
     @Test
     void checkRateLimit_shouldAllowRequestsWithinLimit() {
         when(requestContext.getUriInfo()).thenReturn(uriInfo);
-        when(uriInfo.getPath()).thenReturn("api/v1/artistas");
+        when(uriInfo.getPath()).thenReturn("v1/artistas");
         when(requestContext.getSecurityContext()).thenReturn(securityContext);
         when(securityContext.getUserPrincipal()).thenReturn(jwt);
         when(jwt.getClaim("userId")).thenReturn(456L);
@@ -232,7 +232,7 @@ class RateLimitFilterTest {
     @Test
     void checkRateLimit_shouldHandleNullSecurityContext() {
         when(requestContext.getUriInfo()).thenReturn(uriInfo);
-        when(uriInfo.getPath()).thenReturn("api/v1/artistas");
+        when(uriInfo.getPath()).thenReturn("v1/artistas");
         when(requestContext.getSecurityContext()).thenReturn(null);
         when(httpServerRequest.getHeader("X-Forwarded-For")).thenReturn(null);
         SocketAddress socketAddress = mock(SocketAddress.class);
@@ -253,7 +253,7 @@ class RateLimitFilterTest {
         requestField.set(rateLimitFilter, httpServerRequest);
 
         when(requestContext.getUriInfo()).thenReturn(uriInfo);
-        when(uriInfo.getPath()).thenReturn("api/v1/artistas");
+        when(uriInfo.getPath()).thenReturn("v1/artistas");
         when(requestContext.getSecurityContext()).thenReturn(null);
         when(httpServerRequest.getHeader("X-Forwarded-For")).thenReturn(null);
         when(httpServerRequest.remoteAddress()).thenReturn(null);
@@ -268,7 +268,7 @@ class RateLimitFilterTest {
     @Test
     void checkRateLimit_shouldHandleJwtWithNullUserId() {
         when(requestContext.getUriInfo()).thenReturn(uriInfo);
-        when(uriInfo.getPath()).thenReturn("api/v1/artistas");
+        when(uriInfo.getPath()).thenReturn("v1/artistas");
         when(requestContext.getSecurityContext()).thenReturn(securityContext);
         when(securityContext.getUserPrincipal()).thenReturn(jwt);
         when(jwt.getClaim("userId")).thenReturn(null);
