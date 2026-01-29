@@ -4,6 +4,7 @@ import com.artistas.models.Artista;
 import com.artistas.models.TipoArtista;
 import com.artistas.models.Usuario;
 import com.artistas.schemas.ArtistaRequest;
+import com.artistas.services.RateLimitService;
 import com.artistas.services.TokenService;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.junit.QuarkusTest;
@@ -24,6 +25,9 @@ public class ArtistaResourceTest {
     @Inject
     TokenService tokenService;
 
+    @Inject
+    RateLimitService rateLimitService;
+
     private static final String TEST_EMAIL = "artistaresource@test.com";
     private static final String TEST_PASSWORD = "password123";
     private static final String TEST_NAME = "Test User";
@@ -33,6 +37,8 @@ public class ArtistaResourceTest {
 
     @BeforeEach
     void setUp() {
+        rateLimitService.clearAll();
+
         QuarkusTransaction.requiringNew().run(() -> {
             Usuario usuario = Usuario.findByEmail(TEST_EMAIL);
             if (usuario == null) {

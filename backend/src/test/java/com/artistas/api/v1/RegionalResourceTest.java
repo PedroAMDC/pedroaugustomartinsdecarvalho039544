@@ -3,6 +3,7 @@ package com.artistas.api.v1;
 import com.artistas.models.Regional;
 import com.artistas.models.Usuario;
 import com.artistas.schemas.RegionalApiResponse;
+import com.artistas.services.RateLimitService;
 import com.artistas.services.RegionalApiClient;
 import com.artistas.services.TokenService;
 import io.quarkus.narayana.jta.QuarkusTransaction;
@@ -30,6 +31,9 @@ public class RegionalResourceTest {
     @Inject
     TokenService tokenService;
 
+    @Inject
+    RateLimitService rateLimitService;
+
     @InjectMock
     @RestClient
     RegionalApiClient apiClient;
@@ -42,6 +46,8 @@ public class RegionalResourceTest {
 
     @BeforeEach
     void setUp() {
+        rateLimitService.clearAll();
+
         QuarkusTransaction.requiringNew().run(() -> {
             Regional.deleteAll();
             Usuario usuario = Usuario.findByEmail(TEST_EMAIL);

@@ -4,12 +4,14 @@ import com.artistas.models.Usuario;
 import com.artistas.schemas.LoginRequest;
 import com.artistas.schemas.RefreshRequest;
 import com.artistas.schemas.RegisterRequest;
+import com.artistas.services.RateLimitService;
 import com.artistas.services.TokenService;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -23,9 +25,17 @@ public class AuthResourceTest {
     @Inject
     TokenService tokenService;
 
+    @Inject
+    RateLimitService rateLimitService;
+
     private static final String TEST_EMAIL = "authresource@test.com";
     private static final String TEST_PASSWORD = "password123";
     private static final String TEST_NAME = "Test User";
+
+    @BeforeEach
+    void setUp() {
+        rateLimitService.clearAll();
+    }
 
     @AfterEach
     void tearDown() {
