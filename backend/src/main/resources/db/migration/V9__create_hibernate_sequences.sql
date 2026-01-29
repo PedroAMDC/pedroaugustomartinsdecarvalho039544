@@ -1,0 +1,9 @@
+CREATE SEQUENCE IF NOT EXISTS albuns_seq START WITH 1 INCREMENT BY 50;
+CREATE SEQUENCE IF NOT EXISTS artistas_seq START WITH 1 INCREMENT BY 50;
+CREATE SEQUENCE IF NOT EXISTS capas_album_seq START WITH 1 INCREMENT BY 50;
+CREATE SEQUENCE IF NOT EXISTS usuarios_seq START WITH 1 INCREMENT BY 50;
+
+SELECT setval('albuns_seq', COALESCE((SELECT MAX(id) + 50 FROM albuns), 1));
+SELECT setval('artistas_seq', COALESCE((SELECT MAX(id) + 50 FROM artistas), 1));
+SELECT setval('capas_album_seq', COALESCE((SELECT MAX(id) + 50 FROM capas_album), 1));
+SELECT setval('usuarios_seq', COALESCE((SELECT MAX(id) + 50 FROM usuarios), 1));
