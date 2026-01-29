@@ -5,6 +5,7 @@ import com.artistas.models.Artista;
 import com.artistas.models.CapaAlbum;
 import com.artistas.models.TipoArtista;
 import com.artistas.models.Usuario;
+import com.artistas.services.RateLimitService;
 import com.artistas.services.StorageService;
 import com.artistas.services.TokenService;
 import com.artistas.testresources.MinioTestResource;
@@ -32,6 +33,9 @@ public class CapaResourceTest {
     TokenService tokenService;
 
     @Inject
+    RateLimitService rateLimitService;
+
+    @Inject
     StorageService storageService;
 
     private static final String TEST_EMAIL = "caparesource@test.com";
@@ -46,6 +50,8 @@ public class CapaResourceTest {
 
     @BeforeEach
     void setUp() {
+        rateLimitService.clearAll();
+
         QuarkusTransaction.requiringNew().run(() -> {
             Usuario usuario = Usuario.findByEmail(TEST_EMAIL);
             if (usuario == null) {

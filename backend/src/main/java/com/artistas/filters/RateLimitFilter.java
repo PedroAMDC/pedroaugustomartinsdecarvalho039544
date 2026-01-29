@@ -65,9 +65,9 @@ public class RateLimitFilter {
         if (securityContext != null) {
             Principal principal = securityContext.getUserPrincipal();
             if (principal instanceof JsonWebToken jwt) {
-                Long userId = jwt.getClaim("userId");
-                if (userId != null) {
-                    return "user:" + userId;
+                Object userIdClaim = jwt.getClaim("userId");
+                if (userIdClaim != null) {
+                    return "user:" + userIdClaim;
                 }
             }
         }
@@ -89,6 +89,6 @@ public class RateLimitFilter {
     }
 
     private boolean shouldApplyRateLimit(String path) {
-        return path.startsWith("api/v1") || path.startsWith("/api/v1");
+        return path.startsWith("v1/") || path.startsWith("/v1/");
     }
 }
