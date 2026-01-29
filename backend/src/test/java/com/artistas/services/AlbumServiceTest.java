@@ -278,6 +278,26 @@ public class AlbumServiceTest {
     }
 
     @Test
+    void create_withMultipleArtistas_shouldCreateAlbumWithAllArtistas() {
+        Artista artista1 = createAndPersistArtista(TEST_ARTISTA_1, TipoArtista.CANTOR);
+        Artista artista2 = createAndPersistArtista(TEST_ARTISTA_2, TipoArtista.BANDA);
+
+        AlbumRequest request = new AlbumRequest();
+        request.titulo = TEST_ALBUM_1;
+        request.anoLancamento = 2020;
+        request.artistaIds = List.of(artista1.id, artista2.id);
+
+        AlbumResponse response = albumService.create(request);
+
+        assertNotNull(response);
+        assertNotNull(response.id);
+        assertEquals(TEST_ALBUM_1, response.titulo);
+        assertEquals(2, response.artistas.size());
+        assertNotNull(response.createdAt);
+        assertNotNull(response.capas);
+    }
+
+    @Test
     @Transactional
     void update_withValidRequest_shouldUpdateAlbumFields() {
         Artista artista = Artista.create(TEST_ARTISTA_1, TipoArtista.CANTOR);
