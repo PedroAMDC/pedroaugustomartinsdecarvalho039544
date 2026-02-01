@@ -7,8 +7,29 @@ on:
     branches: [main, develop]
 
 jobs:
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+              - 'pom.xml'
+            frontend:
+              - 'frontend/**'
+
   backend:
     name: Backend (Maven)
+    needs: changes
+    if: ${{ needs.changes.outputs.backend == 'true' }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -28,6 +49,8 @@ jobs:
 
   frontend:
     name: Frontend (Next.js)
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -35,18 +58,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Check if frontend exists
-        id: check
-        run: |
-          if [ -f package.json ]; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "Frontend not yet implemented, skipping..."
-            echo "exists=false" >> $GITHUB_OUTPUT
-          fi
-
       - name: Set up Node.js
-        if: steps.check.outputs.exists == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -54,17 +66,27 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
-        if: steps.check.outputs.exists == 'true'
         run: npm ci
 
       - name: Lint
-        if: steps.check.outputs.exists == 'true'
         run: npm run lint
 
       - name: Type check
-        if: steps.check.outputs.exists == 'true'
-        run: npm run type-check || echo "type-check script not found, skipping..."
+        run: npm run type-check
 
       - name: Build
-        if: steps.check.outputs.exists == 'true'
         run: npm run build
+
+  ci-success:
+    name: CI Success
+    needs: [changes, backend, frontend]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check results
+        run: |
+          if [[ "${{ needs.backend.result }}" == "failure" ]] || [[ "${{ needs.frontend.result }}" == "failure" ]]; then
+            echo "One or more jobs failed"
+            exit 1
+          fi
+          echo "All required jobs passed or were skipped"
