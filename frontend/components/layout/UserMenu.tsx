@@ -58,7 +58,10 @@ export function UserMenu() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={logout} className="text-destructive">
+          <DropdownMenuItem
+            onClick={logout}
+            className="text-destructive cursor-pointer hover:bg-destructive/10 focus:bg-destructive/10"
+          >
             <LogOut className="mr-2 h-4 w-4" />
             Sair
           </DropdownMenuItem>
