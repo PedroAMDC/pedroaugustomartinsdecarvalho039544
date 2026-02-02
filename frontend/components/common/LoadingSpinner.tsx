@@ -1,5 +1,6 @@
 'use client';
 
+import { useId } from 'react';
 import { cn } from '@/lib/utils';
 
 interface LoadingSpinnerProps {
@@ -16,113 +17,110 @@ const sizeConfig = {
 
 interface VinylDiscProps {
   size: number;
-  showArm: boolean;
+  showArm?: boolean;
+  spinning?: boolean;
   className?: string;
 }
 
-function VinylDisc({ size, showArm, className }: VinylDiscProps) {
+export function VinylDisc({
+  size,
+  showArm = false,
+  spinning = true,
+  className,
+}: VinylDiscProps) {
   const viewBoxSize = showArm ? 120 : 100;
-  const discCenter = showArm ? 50 : 50;
+  const discCenter = 50;
+  const uniqueId = useId();
 
   return (
     <svg
       width={size}
       height={size}
       viewBox={`0 0 ${viewBoxSize} ${viewBoxSize}`}
-      className={className}
+      className={cn('drop-shadow-lg', className)}
       aria-hidden="true"
     >
-      {/* Definitions for gradients */}
       <defs>
-        {/* Vinyl gradient - creates the grooves effect */}
-        <radialGradient id="vinylGradient" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="currentColor" stopOpacity="0.3" />
-          <stop offset="30%" stopColor="currentColor" stopOpacity="0.9" />
-          <stop offset="100%" stopColor="currentColor" stopOpacity="1" />
+        {/* Gradient for vinyl disc - creates realistic grooves look */}
+        <radialGradient id={`${uniqueId}-disc`} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#1a1a1a" />
+          <stop offset="35%" stopColor="#0d0d0d" />
+          <stop offset="100%" stopColor="#1a1a1a" />
         </radialGradient>
 
-        {/* Light reflection gradient */}
-        <linearGradient id="shineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        {/* Gradient for center label - warm brown/amber */}
+        <radialGradient id={`${uniqueId}-label`} cx="30%" cy="30%" r="70%">
+          <stop offset="0%" stopColor="#d4a574" />
+          <stop offset="50%" stopColor="#b8860b" />
+          <stop offset="100%" stopColor="#8b6914" />
+        </radialGradient>
+
+        {/* Shine effect */}
+        <linearGradient id={`${uniqueId}-shine`} x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="white" stopOpacity="0.15" />
           <stop offset="50%" stopColor="white" stopOpacity="0" />
-          <stop offset="100%" stopColor="white" stopOpacity="0.1" />
+          <stop offset="100%" stopColor="white" stopOpacity="0.08" />
         </linearGradient>
-
-        {/* Label gradient */}
-        <radialGradient id="labelGradient" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" className="[stop-color:hsl(var(--primary))]" stopOpacity="1" />
-          <stop offset="100%" className="[stop-color:hsl(var(--primary))]" stopOpacity="0.8" />
-        </radialGradient>
       </defs>
 
-      {/* Main vinyl disc group - this rotates */}
-      <g className="origin-center animate-spin-slow" style={{ transformOrigin: `${discCenter}px ${discCenter}px` }}>
-        {/* Outer disc */}
+      {/* Main vinyl disc group */}
+      <g
+        className={spinning ? 'origin-center animate-spin-slow' : undefined}
+        style={{ transformOrigin: `${discCenter}px ${discCenter}px` }}
+      >
+        {/* Outer edge - slightly lighter */}
+        <circle
+          cx={discCenter}
+          cy={discCenter}
+          r="46"
+          fill="#2a2a2a"
+        />
+
+        {/* Main disc body */}
         <circle
           cx={discCenter}
           cy={discCenter}
           r="45"
-          className="fill-foreground"
+          fill={`url(#${uniqueId}-disc)`}
         />
 
-        {/* Groove rings - concentric circles */}
-        <circle
-          cx={discCenter}
-          cy={discCenter}
-          r="40"
-          className="fill-none stroke-background/10"
-          strokeWidth="0.5"
-        />
-        <circle
-          cx={discCenter}
-          cy={discCenter}
-          r="36"
-          className="fill-none stroke-background/15"
-          strokeWidth="0.5"
-        />
-        <circle
-          cx={discCenter}
-          cy={discCenter}
-          r="32"
-          className="fill-none stroke-background/10"
-          strokeWidth="0.5"
-        />
-        <circle
-          cx={discCenter}
-          cy={discCenter}
-          r="28"
-          className="fill-none stroke-background/15"
-          strokeWidth="0.5"
-        />
-        <circle
-          cx={discCenter}
-          cy={discCenter}
-          r="24"
-          className="fill-none stroke-background/10"
-          strokeWidth="0.5"
-        />
-        <circle
-          cx={discCenter}
-          cy={discCenter}
-          r="20"
-          className="fill-none stroke-background/15"
-          strokeWidth="0.5"
-        />
+        {/* Groove rings - realistic vinyl grooves */}
+        {[42, 40, 38, 36, 34, 32, 30, 28, 26, 24, 22, 20, 18].map((r, i) => (
+          <circle
+            key={r}
+            cx={discCenter}
+            cy={discCenter}
+            r={r}
+            fill="none"
+            stroke={i % 2 === 0 ? '#252525' : '#1f1f1f'}
+            strokeWidth="0.4"
+          />
+        ))}
 
         {/* Center label */}
         <circle
           cx={discCenter}
           cy={discCenter}
           r="15"
-          className="fill-primary"
+          fill={`url(#${uniqueId}-label)`}
         />
 
-        {/* Label decoration - small circle */}
+        {/* Label text area - decorative lines */}
+        <circle
+          cx={discCenter}
+          cy={discCenter}
+          r="12"
+          fill="none"
+          stroke="#a0722a"
+          strokeWidth="0.3"
+        />
+
+        {/* Label decoration - small dot */}
         <circle
           cx={discCenter}
           cy={discCenter - 8}
-          r="2"
-          className="fill-primary-foreground/60"
+          r="1.5"
+          fill="#e8d5b7"
         />
 
         {/* Center hole */}
@@ -130,26 +128,37 @@ function VinylDisc({ size, showArm, className }: VinylDiscProps) {
           cx={discCenter}
           cy={discCenter}
           r="3"
-          className="fill-background"
+          fill="#f5f0e8"
+        />
+
+        {/* Inner ring around hole */}
+        <circle
+          cx={discCenter}
+          cy={discCenter}
+          r="4"
+          fill="none"
+          stroke="#c9a961"
+          strokeWidth="0.5"
         />
 
         {/* Light reflection overlay */}
         <ellipse
-          cx={discCenter - 10}
-          cy={discCenter - 10}
-          rx="20"
-          ry="15"
-          className="fill-white/5"
+          cx={discCenter - 12}
+          cy={discCenter - 12}
+          rx="22"
+          ry="16"
+          fill={`url(#${uniqueId}-shine)`}
           transform={`rotate(-45 ${discCenter} ${discCenter})`}
         />
       </g>
 
       {/* Tonearm - static, doesn't rotate */}
       {showArm && (
-        <g className="fill-muted-foreground">
+        <g>
           {/* Arm base/pivot */}
-          <circle cx="95" cy="15" r="8" className="fill-muted" />
-          <circle cx="95" cy="15" r="5" className="fill-foreground" />
+          <circle cx="95" cy="15" r="8" fill="#d4c4a8" />
+          <circle cx="95" cy="15" r="5" fill="#3d3d3d" />
+          <circle cx="95" cy="15" r="2" fill="#5a5a5a" />
 
           {/* Arm */}
           <rect
@@ -158,7 +167,7 @@ function VinylDisc({ size, showArm, className }: VinylDiscProps) {
             width="42"
             height="4"
             rx="2"
-            className="fill-muted-foreground"
+            fill="#8a8a8a"
             transform="rotate(-15 95 15)"
           />
 
@@ -169,7 +178,7 @@ function VinylDisc({ size, showArm, className }: VinylDiscProps) {
             width="12"
             height="6"
             rx="1"
-            className="fill-muted-foreground"
+            fill="#6a6a6a"
             transform="rotate(-15 54 31)"
           />
 
@@ -180,7 +189,7 @@ function VinylDisc({ size, showArm, className }: VinylDiscProps) {
             width="6"
             height="4"
             rx="0.5"
-            className="fill-foreground"
+            fill="#2a2a2a"
             transform="rotate(-15 48 34)"
           />
         </g>
@@ -203,10 +212,7 @@ export function LoadingSpinner({
       aria-label="Carregando..."
       className={cn('inline-flex items-center justify-center', className)}
     >
-      <VinylDisc
-        size={config.dimension}
-        showArm={config.showArm}
-      />
+      <VinylDisc size={config.dimension} showArm={config.showArm} spinning />
       <span className="sr-only">Carregando...</span>
     </div>
   );
