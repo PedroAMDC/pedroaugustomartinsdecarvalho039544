@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { AxiosProgressEvent } from 'axios';
 import { albumService } from '../album-service';
 import api from '../api';
 import type {
@@ -205,7 +206,9 @@ describe('AlbumService', () => {
       expect(api.post).toHaveBeenCalledWith(
         '/v1/albuns/1/capas',
         expect.any(FormData),
-        { headers: { 'Content-Type': 'multipart/form-data' } }
+        expect.objectContaining({
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
       );
     });
 
@@ -216,7 +219,9 @@ describe('AlbumService', () => {
       await albumService.uploadCapa(1, mockFile);
 
       const callArgs = vi.mocked(api.post).mock.calls[0];
-      expect(callArgs[2]).toEqual({ headers: { 'Content-Type': 'multipart/form-data' } });
+      expect(callArgs[2]).toMatchObject({
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
     });
 
     it('should return created capa', async () => {
@@ -228,6 +233,58 @@ describe('AlbumService', () => {
       expect(result.id).toBe(1);
       expect(result.originalName).toBe('cover.jpg');
       expect(result.contentType).toBe('image/jpeg');
+    });
+
+    it('should call onProgress callback with progress percentage', async () => {
+      vi.mocked(api.post).mockImplementation((_url, _data, config) => {
+        // Simulate progress events
+        if (config?.onUploadProgress) {
+          config.onUploadProgress({ loaded: 50, total: 100 } as AxiosProgressEvent);
+          config.onUploadProgress({ loaded: 100, total: 100 } as AxiosProgressEvent);
+        }
+        return Promise.resolve({ data: mockCapa });
+      });
+
+      const onProgress = vi.fn();
+      const mockFile = new File(['test'], 'cover.jpg', { type: 'image/jpeg' });
+
+      await albumService.uploadCapa(1, mockFile, onProgress);
+
+      expect(onProgress).toHaveBeenCalledWith(50);
+      expect(onProgress).toHaveBeenCalledWith(100);
+    });
+
+    it('should work without onProgress callback', async () => {
+      vi.mocked(api.post).mockImplementation((_url, _data, config) => {
+        // Simulate progress event without onProgress
+        if (config?.onUploadProgress) {
+          config.onUploadProgress({ loaded: 100, total: 100 } as AxiosProgressEvent);
+        }
+        return Promise.resolve({ data: mockCapa });
+      });
+
+      const mockFile = new File(['test'], 'cover.jpg', { type: 'image/jpeg' });
+
+      // Should not throw
+      await expect(albumService.uploadCapa(1, mockFile)).resolves.toEqual(mockCapa);
+    });
+
+    it('should handle progress event without total', async () => {
+      vi.mocked(api.post).mockImplementation((_url, _data, config) => {
+        // Simulate progress event without total (edge case)
+        if (config?.onUploadProgress) {
+          config.onUploadProgress({ loaded: 50 } as AxiosProgressEvent);
+        }
+        return Promise.resolve({ data: mockCapa });
+      });
+
+      const onProgress = vi.fn();
+      const mockFile = new File(['test'], 'cover.jpg', { type: 'image/jpeg' });
+
+      await albumService.uploadCapa(1, mockFile, onProgress);
+
+      // Should not call onProgress when total is undefined
+      expect(onProgress).not.toHaveBeenCalled();
     });
   });
 

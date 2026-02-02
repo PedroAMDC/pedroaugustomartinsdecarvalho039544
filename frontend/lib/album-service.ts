@@ -32,14 +32,28 @@ class AlbumService {
     return data;
   }
 
-  async uploadCapa(albumId: number, file: File): Promise<CapaAlbum> {
+  async uploadCapa(
+    albumId: number,
+    file: File,
+    onProgress?: (percent: number) => void
+  ): Promise<CapaAlbum> {
     const formData = new FormData();
     formData.append('file', file);
 
     const { data } = await api.post<CapaAlbum>(
       `/v1/albuns/${albumId}/capas`,
       formData,
-      { headers: { 'Content-Type': 'multipart/form-data' } }
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: (progressEvent) => {
+          if (onProgress && progressEvent.total) {
+            const percent = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            onProgress(percent);
+          }
+        },
+      }
     );
     return data;
   }

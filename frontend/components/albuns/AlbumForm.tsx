@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 import {
   Card,
   CardContent,
@@ -68,6 +69,7 @@ export function AlbumForm({ album, onSuccess }: AlbumFormProps) {
   const [loadingArtistas, setLoadingArtistas] = useState(true);
   const [capaFile, setCapaFile] = useState<File | null>(null);
   const [currentCapaUrl, setCurrentCapaUrl] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const router = useRouter();
 
   const isEditMode = !!album;
@@ -150,7 +152,11 @@ export function AlbumForm({ album, onSuccess }: AlbumFormProps) {
 
       // Upload cover if selected
       if (capaFileRef.current) {
-        await albumService.uploadCapa(albumId, capaFileRef.current);
+        setUploadProgress(0);
+        await albumService.uploadCapa(albumId, capaFileRef.current, (percent) => {
+          setUploadProgress(percent);
+        });
+        setUploadProgress(null);
       }
 
       if (onSuccess) {
@@ -358,6 +364,14 @@ export function AlbumForm({ album, onSuccess }: AlbumFormProps) {
                   onUpload={handleImageUpload}
                   currentImage={currentCapaUrl || undefined}
                 />
+                {uploadProgress !== null && (
+                  <div className="mt-3 space-y-1">
+                    <Progress value={uploadProgress} className="h-2" />
+                    <p className="text-center text-xs text-muted-foreground">
+                      Enviando capa... {uploadProgress}%
+                    </p>
+                  </div>
+                )}
               </div>
             </CardContent>
 
