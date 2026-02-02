@@ -27,12 +27,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="pt-BR" suppressHydrationWarning className="overflow-hidden">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen overflow-hidden`}>
         <AuthProvider>
           <NotificationProvider>
             <Header />
-            <main className="container py-6">{children}</main>
+            <main className="h-[calc(100vh-3.5rem)] overflow-auto">{children}</main>
             <Toaster />
           </NotificationProvider>
         </AuthProvider>
