@@ -41,6 +41,15 @@ const decodeToken = (token: string): User | null => {
   }
 };
 
+const getTokenExpiration = (token: string): number | null => {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.exp ? payload.exp * 1000 : null;
+  } catch {
+    return null;
+  }
+};
+
 interface AuthProviderProps {
   children: ReactNode;
 }
@@ -82,6 +91,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const logout = useCallback(() => {
     clearTokens();
     setUser(null);
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login';
+    }
   }, []);
 
   const register = useCallback(
@@ -119,6 +131,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const decodedUser = decodeToken(token);
     setUser(decodedUser);
   }, []);
+
+  useEffect(() => {
+    const token = getToken();
+    if (!token || !user) return;
+
+    const exp = getTokenExpiration(token);
+    if (!exp) return;
+
+    const refreshTime = exp - Date.now() - 30000;
+    const delay = Math.max(refreshTime, 0);
+
+    const timeoutId = setTimeout(() => {
+      refreshTokenFn().catch(() => logout());
+    }, delay);
+
+    return () => clearTimeout(timeoutId);
+  }, [user, refreshTokenFn, logout]);
 
   const value: AuthContextType = {
     user,
