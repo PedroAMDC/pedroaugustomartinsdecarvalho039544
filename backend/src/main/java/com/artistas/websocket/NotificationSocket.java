@@ -17,9 +17,6 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 public class NotificationSocket {
 
     @Inject
-    SessionManager sessionManager;
-
-    @Inject
     TokenService tokenService;
 
     @Inject
@@ -38,7 +35,6 @@ public class NotificationSocket {
         try {
             JsonWebToken jwt = tokenService.validateAccessToken(token);
             String userId = jwt.getSubject();
-            sessionManager.addSession(connection.id(), connection);
             Log.infof("WebSocket connection opened for user %s, connection ID: %s", userId, connection.id());
         } catch (InvalidTokenException e) {
             Log.warnf("WebSocket connection attempt with invalid token: %s", e.getMessage());
@@ -48,14 +44,12 @@ public class NotificationSocket {
 
     @OnClose
     public void onClose() {
-        sessionManager.removeSession(connection.id());
         Log.infof("WebSocket connection closed, connection ID: %s", connection.id());
     }
 
     @OnError
     public void onError(Throwable error) {
         Log.errorf(error, "WebSocket error for connection ID: %s", connection.id());
-        sessionManager.removeSession(connection.id());
     }
 
     @OnTextMessage

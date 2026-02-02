@@ -45,7 +45,6 @@ public class NotificationSocketTest {
     @BeforeEach
     @Transactional
     void setUp() {
-        sessionManager.clearAll();
         Usuario.delete("email", TEST_EMAIL);
         testUsuario = Usuario.create(TEST_EMAIL, TEST_PASSWORD, TEST_NAME);
         testUsuario.persist();
@@ -55,7 +54,6 @@ public class NotificationSocketTest {
     @AfterEach
     @Transactional
     void tearDown() {
-        sessionManager.clearAll();
         Usuario.delete("email", TEST_EMAIL);
     }
 

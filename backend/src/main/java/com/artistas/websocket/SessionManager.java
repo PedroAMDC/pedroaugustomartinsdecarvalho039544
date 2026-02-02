@@ -1,53 +1,47 @@
 package com.artistas.websocket;
 
+import io.quarkus.logging.Log;
+import io.quarkus.websockets.next.OpenConnections;
 import io.quarkus.websockets.next.WebSocketConnection;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @ApplicationScoped
 public class SessionManager {
 
-    private final Map<String, WebSocketConnection> sessions = new ConcurrentHashMap<>();
-
-    public void addSession(String connectionId, WebSocketConnection connection) {
-        sessions.put(connectionId, connection);
-    }
-
-    public void removeSession(String connectionId) {
-        sessions.remove(connectionId);
-    }
-
-    public WebSocketConnection getSession(String connectionId) {
-        return sessions.get(connectionId);
-    }
+    @Inject
+    OpenConnections openConnections;
 
     public Collection<WebSocketConnection> getAllSessions() {
-        return sessions.values();
+        return openConnections.listAll();
     }
 
     public int getSessionCount() {
-        return sessions.size();
-    }
-
-    public boolean hasSession(String connectionId) {
-        return sessions.containsKey(connectionId);
+        return openConnections.listAll().size();
     }
 
     public void broadcast(String message) {
-        sessions.values().forEach(connection -> {
-            connection.sendTextAndAwait(message);
+        openConnections.listAll().forEach(connection -> {
+            try {
+                connection.sendTextAndAwait(message);
+            } catch (Exception e) {
+                Log.warnf("Failed to send message to connection %s: %s",
+                    connection.id(), e.getMessage());
+            }
         });
     }
 
     public void broadcastExcept(String message, String excludeConnectionId) {
-        sessions.entrySet().stream()
-            .filter(entry -> !entry.getKey().equals(excludeConnectionId))
-            .forEach(entry -> entry.getValue().sendTextAndAwait(message));
-    }
-
-    public void clearAll() {
-        sessions.clear();
+        openConnections.listAll().stream()
+            .filter(conn -> !conn.id().equals(excludeConnectionId))
+            .forEach(conn -> {
+                try {
+                    conn.sendTextAndAwait(message);
+                } catch (Exception e) {
+                    Log.warnf("Failed to send message to connection %s: %s",
+                        conn.id(), e.getMessage());
+                }
+            });
     }
 }
