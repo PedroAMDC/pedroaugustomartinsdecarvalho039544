@@ -83,6 +83,15 @@ api.interceptors.response.use(
 
     // Handle 401 - Unauthorized
     if (error.response?.status === 401 && originalRequest) {
+      // Skip token refresh logic for auth endpoints (login, register)
+      const isAuthEndpoint =
+        originalRequest.url?.includes('/auth/login') ||
+        originalRequest.url?.includes('/auth/register');
+
+      if (isAuthEndpoint) {
+        return Promise.reject(error);
+      }
+
       const refreshToken = getRefreshToken();
 
       // No refresh token or already tried refresh
