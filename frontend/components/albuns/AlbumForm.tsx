@@ -152,6 +152,17 @@ export function AlbumForm({ album, onSuccess }: AlbumFormProps) {
 
       // Upload cover if selected
       if (capaFileRef.current) {
+        // Delete existing covers before uploading new one (replace behavior)
+        if (isEditMode && album && album.capas && album.capas.length > 0) {
+          for (const capa of album.capas) {
+            try {
+              await albumService.deleteCapa(albumId, capa.id);
+            } catch {
+              // Continue even if delete fails
+            }
+          }
+        }
+
         setUploadProgress(0);
         await albumService.uploadCapa(albumId, capaFileRef.current, (percent) => {
           setUploadProgress(percent);
