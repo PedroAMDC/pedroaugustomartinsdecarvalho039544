@@ -34,11 +34,13 @@ export const getRefreshToken = (): string | null => {
 export const setTokens = (token: string, refreshToken: string): void => {
   localStorage.setItem(TOKEN_KEY, token);
   localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+  document.cookie = `token=${token}; path=/; max-age=${60 * 60 * 24}`;
 };
 
 export const clearTokens = (): void => {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
+  document.cookie = 'token=; path=/; max-age=0';
 };
 
 // Request interceptor - add auth token
