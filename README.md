@@ -37,40 +37,167 @@
 
 ## Como Executar
 
-### Pré-requisitos
-- Docker e Docker Compose instalados
-- Git
+### Pre-requisitos
 
-### Execução com Docker Compose
+| Requisito | Versao minima | Verificar instalacao |
+|-----------|---------------|----------------------|
+| Docker | 20.10+ | `docker --version` |
+| Docker Compose | v2.0+ | `docker compose version` |
+| Git | 2.30+ | `git --version` |
+
+**Recursos recomendados:** 4 GB de RAM disponivel para os containers.
+
+**Portas necessarias (devem estar livres):**
+
+| Porta | Servico |
+|-------|---------|
+| 3000 | Frontend (Next.js) |
+| 5432 | PostgreSQL |
+| 8080 | Backend (Quarkus) |
+| 9000 | MinIO (API) |
+| 9001 | MinIO (Console) |
+
+### Clone e Setup
+
+**1. Clonar o repositorio:**
 
 ```bash
-# Clonar o repositório
 git clone https://github.com/PedroAMDC/pedroaugustomartinsdecarvalho039544.git
 cd pedroaugustomartinsdecarvalho039544
+```
 
-# Copiar variáveis de ambiente
+**2. Configurar variaveis de ambiente:**
+
+```bash
 cp .env.example .env
+```
 
-# Gerar chaves RSA para JWT (obrigatorio para autenticacao)
+O arquivo `.env.example` contem valores padrao prontos para uso local. Edite o `.env` apenas se precisar personalizar alguma configuracao (ver tabela de variaveis abaixo).
+
+**3. Configurar chaves RSA para JWT:**
+
+As chaves RSA sao necessarias para autenticacao JWT. Escolha uma das opcoes:
+
+**Opcao A - Copiar chaves de exemplo (recomendado para avaliacao rapida):**
+
+```bash
+cd backend/src/main/resources
+cp privateKey.example.pem privateKey.pem
+cp publicKey.example.pem publicKey.pem
+cd ../../../..
+```
+
+**Opcao B - Gerar chaves novas (recomendado para producao):**
+
+```bash
 cd backend/src/main/resources
 openssl genrsa -out privateKey.pem 2048
 openssl rsa -in privateKey.pem -pubout -out publicKey.pem
 cd ../../../..
-
-# Executar todos os serviços
-docker-compose up --build
 ```
 
-> **Nota:** As chaves RSA (.pem) estao no .gitignore por seguranca. Arquivos de exemplo (.example.pem) sao fornecidos para referencia. Para desenvolvimento rapido, voce pode copiar os arquivos de exemplo:
-> ```bash
-> cd backend/src/main/resources
-> cp privateKey.example.pem privateKey.pem
-> cp publicKey.example.pem publicKey.pem
-> ```
+> **Nota:** As chaves RSA (.pem) estao no .gitignore por seguranca.
 
-### URLs dos Serviços
+**4. Iniciar todos os servicos:**
 
-| Serviço | URL |
+```bash
+docker compose up --build
+```
+
+Aguarde ate que todos os containers estejam saudaveis. O backend pode levar alguns segundos para iniciar apos o PostgreSQL e MinIO estarem prontos. A inicializacao esta completa quando voce vir no log:
+
+```
+artistas-backend  | Quarkus started in ...
+artistas-frontend | Ready in ...
+```
+
+### Variaveis de Ambiente
+
+Todas as variaveis estao documentadas no arquivo `.env.example`. A tabela abaixo descreve cada uma:
+
+**PostgreSQL:**
+
+| Variavel | Descricao | Valor padrao |
+|----------|-----------|--------------|
+| `POSTGRES_HOST` | Host do banco de dados | `postgres` |
+| `POSTGRES_PORT` | Porta do banco de dados | `5432` |
+| `POSTGRES_DB` | Nome do banco de dados | `artistas_albuns` |
+| `POSTGRES_USER` | Usuario do banco | `postgres` |
+| `POSTGRES_PASSWORD` | Senha do banco | `postgres123` |
+
+**MinIO (Object Storage):**
+
+| Variavel | Descricao | Valor padrao |
+|----------|-----------|--------------|
+| `MINIO_ENDPOINT` | URL do servico MinIO | `http://minio:9000` |
+| `MINIO_ROOT_USER` | Usuario root do MinIO | `minioadmin` |
+| `MINIO_ROOT_PASSWORD` | Senha root do MinIO | `minioadmin123` |
+| `MINIO_BUCKET` | Nome do bucket para capas | `albuns-capas` |
+| `MINIO_PRESIGNED_URL_EXPIRY` | Expiracao da URL pre-assinada (segundos) | `1800` |
+
+**Backend (Quarkus):**
+
+| Variavel | Descricao | Valor padrao |
+|----------|-----------|--------------|
+| `QUARKUS_HTTP_PORT` | Porta do servidor | `8080` |
+| `QUARKUS_PROFILE` | Perfil de execucao | `dev` |
+| `JWT_SECRET` | Segredo para assinatura JWT | (valor longo no .env.example) |
+| `JWT_ISSUER` | Emissor do token JWT | `artistas-albuns-api` |
+| `JWT_EXPIRATION_SECONDS` | Expiracao do access token | `300` (5 min) |
+| `JWT_REFRESH_EXPIRATION_SECONDS` | Expiracao do refresh token | `86400` (24h) |
+| `CORS_ALLOWED_ORIGINS` | Origens permitidas para CORS | `http://localhost:3000` |
+| `RATE_LIMIT_REQUESTS_PER_MINUTE` | Limite de requisicoes por minuto | `10` |
+
+**Frontend (Next.js):**
+
+| Variavel | Descricao | Valor padrao |
+|----------|-----------|--------------|
+| `NEXT_PUBLIC_API_URL` | URL da API backend | `http://localhost:8080` |
+| `NEXT_PUBLIC_WS_URL` | URL do WebSocket | `ws://localhost:8080` |
+
+**API Externa:**
+
+| Variavel | Descricao | Valor padrao |
+|----------|-----------|--------------|
+| `EXTERNAL_API_URL` | URL da API publica de regionais | `https://api-publica-mt.seplag.mt.gov.br` |
+
+### Comandos Docker Compose
+
+```bash
+# Iniciar todos os servicos (primeiro uso ou apos mudancas)
+docker compose up --build
+
+# Iniciar em segundo plano (detached)
+docker compose up --build -d
+
+# Parar todos os servicos
+docker compose down
+
+# Parar e remover volumes (reset completo do banco e MinIO)
+docker compose down -v
+
+# Ver logs de todos os servicos
+docker compose logs -f
+
+# Ver logs de um servico especifico
+docker compose logs -f backend
+docker compose logs -f frontend
+docker compose logs -f postgres
+docker compose logs -f minio
+
+# Reiniciar um servico especifico
+docker compose restart backend
+
+# Reconstruir e reiniciar apenas um servico
+docker compose up --build -d backend
+
+# Verificar status dos containers
+docker compose ps
+```
+
+### URLs dos Servicos
+
+| Servico | URL |
 |---------|-----|
 | Frontend | http://localhost:3000 |
 | Backend API | http://localhost:8080 |
@@ -78,17 +205,109 @@ docker-compose up --build
 | Health Check | http://localhost:8080/q/health |
 | MinIO Console | http://localhost:9001 |
 
-### Credenciais Padrão
+### Credenciais Padrao
 
-**MinIO:**
-- Usuário: `minioadmin`
-- Senha: `minioadmin`
+**Aplicacao (registrar novo usuario via frontend ou API):**
 
-**Banco de Dados:**
-- Host: `localhost:5432`
-- Database: `artistasdb`
-- Usuário: `postgres`
-- Senha: `postgres`
+```bash
+curl -X POST http://localhost:8080/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@teste.com","password":"Senha@123","confirmPassword":"Senha@123","nome":"Admin"}'
+```
+
+**MinIO Console (http://localhost:9001):**
+- Usuario: `minioadmin`
+- Senha: `minioadmin123`
+
+**PostgreSQL (localhost:5432):**
+- Database: `artistas_albuns`
+- Usuario: `postgres`
+- Senha: `postgres123`
+
+### Troubleshooting
+
+**Porta ja em uso:**
+
+```
+Error: bind: address already in use
+```
+
+Verifique quais processos estao usando as portas necessarias:
+
+```bash
+# Linux/macOS
+lsof -i :3000 -i :5432 -i :8080 -i :9000 -i :9001
+
+# Windows (PowerShell)
+netstat -ano | findstr "3000 5432 8080 9000 9001"
+```
+
+Encerre o processo conflitante ou altere as portas no `docker-compose.yml`.
+
+**Backend nao conecta no PostgreSQL:**
+
+```
+Connection refused / FATAL: database "artistas_albuns" does not exist
+```
+
+O PostgreSQL pode nao ter terminado a inicializacao. Aguarde e tente novamente. Se persistir, reinicie com volumes limpos:
+
+```bash
+docker compose down -v
+docker compose up --build
+```
+
+**Erro de chave RSA / JWT:**
+
+```
+java.security.spec.InvalidKeySpecException / Could not read private key
+```
+
+As chaves RSA nao foram configuradas. Siga o passo 3 da secao "Clone e Setup" para copiar ou gerar as chaves.
+
+**MinIO bucket nao encontrado:**
+
+```
+The specified bucket does not exist
+```
+
+O container `minio-setup` cria o bucket automaticamente. Verifique se executou com sucesso:
+
+```bash
+docker compose logs minio-setup
+```
+
+Se necessario, crie manualmente via MinIO Console (http://localhost:9001) com o nome `albuns-capas`.
+
+**Frontend nao conecta na API:**
+
+```
+ECONNREFUSED / Network Error
+```
+
+Verifique se o backend esta rodando e saudavel:
+
+```bash
+curl http://localhost:8080/q/health
+```
+
+Se estiver em Windows com Docker Desktop, certifique-se de que `localhost` esta acessivel dentro do container.
+
+**Docker sem memoria:**
+
+```
+Exited (137) / OOMKilled
+```
+
+Aumente a memoria do Docker Desktop (Settings > Resources) para no minimo 4 GB.
+
+**Rebuild completo (quando nada funciona):**
+
+```bash
+docker compose down -v
+docker system prune -f
+docker compose up --build
+```
 
 ---
 
