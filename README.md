@@ -129,6 +129,111 @@ frontend/
 └── types/               # TypeScript Types
 ```
 
+### Diagrama do Sistema
+
+```
++-------------------+
+|     Browser       |
++--------+----------+
+         |
+         | HTTP :3000
+         v
++-------------------+     WebSocket
+|    Frontend       |------------------+
+|   Next.js 16      |                  |
++--------+----------+                  |
+         |                             |
+         | HTTP/REST :8080             |
+         v                             v
++-------------------+     +-------------------+
+|    Backend        |     |    WebSocket      |
+|   Quarkus 3.17    |     | /ws/notifications |
++--------+----------+     +-------------------+
+         |
+    +----+----+
+    |         |
+    v         v
++-------+  +-------+
+|  DB   |  | MinIO |
+| PgSQL |  |  S3   |
+| :5432 |  | :9000 |
++-------+  +-------+
+```
+
+### Modelo de Dados (ER)
+
+```
++---------------+       +------------------+       +---------------+
+|   Usuario     |       |  artista_album   |       |    Artista    |
++---------------+       +------------------+       +---------------+
+| id (PK)       |       | artista_id (FK)  |------>| id (PK)       |
+| email (UQ)    |       | album_id (FK)    |       | nome          |
+| password_hash |       +------------------+       | tipo          |
+| nome          |               |                  | created_at    |
+| ativo         |               |                  +---------------+
+| created_at    |               |                         ^
++---------------+               v                         |
+                        +---------------+                 |
+                        |    Album      |-----------------+
+                        +---------------+        N:M
+                        | id (PK)       |
+                        | titulo        |
+                        | ano_lancamento|
+                        | created_at    |
+                        +-------+-------+
+                                |
+                                | 1:N
+                                v
+                        +---------------+
+                        |  CapaAlbum    |
+                        +---------------+
+                        | id (PK)       |
+                        | album_id (FK) |
+                        | minio_key     |
+                        | original_name |
+                        | content_type  |
+                        | tamanho_bytes |
+                        +---------------+
+```
+
+### Fluxo de Autenticacao (JWT)
+
+```
++--------+          +----------+          +---------+
+| Client |          | Backend  |          |   DB    |
++---+----+          +----+-----+          +----+----+
+    |                    |                     |
+    | POST /v1/auth/login                      |
+    |------------------->|                     |
+    |                    | Busca usuario       |
+    |                    |-------------------->|
+    |                    |<--------------------|
+    |                    |                     |
+    |                    | Valida senha (BCrypt)
+    |                    | Gera JWT (5min)     |
+    |                    | Gera Refresh (24h)  |
+    |<-------------------|                     |
+    | { accessToken, refreshToken }            |
+    |                    |                     |
+    | GET /v1/artistas   |                     |
+    | Authorization: Bearer <token>            |
+    |------------------->|                     |
+    |                    | Valida JWT          |
+    |                    | Rate Limit Check    |
+    |                    |-------------------->|
+    |<-------------------|                     |
+    | { artistas[] }     |                     |
+    |                    |                     |
+    | PUT /v1/auth/refresh                     |
+    | { refreshToken }   |                     |
+    |------------------->|                     |
+    |                    | Valida Refresh      |
+    |                    | Gera novo par       |
+    |<-------------------|                     |
+    | { accessToken, refreshToken }            |
++---+----+          +----+-----+          +----+----+
+```
+
 ---
 
 ## Funcionalidades Implementadas
