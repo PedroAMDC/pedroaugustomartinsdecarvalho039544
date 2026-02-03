@@ -1,7 +1,9 @@
 package com.artistas.api.v1;
 
+import com.artistas.schemas.ErrorResponse;
 import com.artistas.schemas.LoginRequest;
 import com.artistas.schemas.LoginResponse;
+import com.artistas.schemas.RateLimitErrorResponse;
 import com.artistas.schemas.RefreshRequest;
 import com.artistas.schemas.RegisterRequest;
 import com.artistas.services.AuthService;
@@ -39,8 +41,26 @@ public class AuthResource {
             description = "Login successful",
             content = @Content(schema = @Schema(implementation = LoginResponse.class))
         ),
-        @APIResponse(responseCode = "400", description = "Invalid request data"),
-        @APIResponse(responseCode = "401", description = "Invalid credentials")
+        @APIResponse(
+            responseCode = "400",
+            description = "Invalid request data",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "401",
+            description = "Invalid credentials",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "429",
+            description = "Rate limit exceeded",
+            content = @Content(schema = @Schema(implementation = RateLimitErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
     })
     public Response login(@Valid LoginRequest request) {
         LoginResponse response = authService.login(request);
@@ -56,8 +76,26 @@ public class AuthResource {
             description = "User registered successfully",
             content = @Content(schema = @Schema(implementation = LoginResponse.class))
         ),
-        @APIResponse(responseCode = "400", description = "Invalid request data"),
-        @APIResponse(responseCode = "409", description = "Email already registered")
+        @APIResponse(
+            responseCode = "400",
+            description = "Invalid request data",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "409",
+            description = "Email already registered",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "429",
+            description = "Rate limit exceeded",
+            content = @Content(schema = @Schema(implementation = RateLimitErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
     })
     public Response register(@Valid RegisterRequest request) {
         LoginResponse response = authService.register(request);
@@ -73,8 +111,26 @@ public class AuthResource {
             description = "Token refreshed successfully",
             content = @Content(schema = @Schema(implementation = LoginResponse.class))
         ),
-        @APIResponse(responseCode = "400", description = "Invalid request data"),
-        @APIResponse(responseCode = "401", description = "Invalid or expired refresh token")
+        @APIResponse(
+            responseCode = "400",
+            description = "Invalid request data",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "401",
+            description = "Invalid or expired refresh token",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "429",
+            description = "Rate limit exceeded",
+            content = @Content(schema = @Schema(implementation = RateLimitErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
     })
     public Response refresh(@Valid RefreshRequest request) {
         LoginResponse response = authService.refresh(request.refreshToken);
