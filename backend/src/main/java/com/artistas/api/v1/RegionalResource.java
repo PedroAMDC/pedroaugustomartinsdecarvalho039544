@@ -1,5 +1,7 @@
 package com.artistas.api.v1;
 
+import com.artistas.schemas.ErrorResponse;
+import com.artistas.schemas.RateLimitErrorResponse;
 import com.artistas.schemas.RegionalListResponse;
 import com.artistas.schemas.RegionalSyncResponse;
 import com.artistas.services.RegionalService;
@@ -45,6 +47,16 @@ public class RegionalResource {
             responseCode = "200",
             description = "List of regionais",
             content = @Content(schema = @Schema(implementation = RegionalListResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "429",
+            description = "Rate limit exceeded",
+            content = @Content(schema = @Schema(implementation = RateLimitErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     public Response list(
@@ -71,8 +83,26 @@ public class RegionalResource {
             description = "Synchronization completed",
             content = @Content(schema = @Schema(implementation = RegionalSyncResponse.class))
         ),
-        @APIResponse(responseCode = "401", description = "Authentication required"),
-        @APIResponse(responseCode = "503", description = "External API unavailable")
+        @APIResponse(
+            responseCode = "401",
+            description = "Authentication required",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "429",
+            description = "Rate limit exceeded",
+            content = @Content(schema = @Schema(implementation = RateLimitErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "503",
+            description = "External API unavailable",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
     })
     public Response sync() {
         RegionalSyncResponse response = regionalSyncService.sync();

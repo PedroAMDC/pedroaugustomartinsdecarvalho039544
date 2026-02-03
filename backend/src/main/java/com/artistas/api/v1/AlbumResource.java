@@ -4,6 +4,8 @@ import com.artistas.models.TipoArtista;
 import com.artistas.schemas.AlbumPaginatedResponse;
 import com.artistas.schemas.AlbumRequest;
 import com.artistas.schemas.AlbumResponse;
+import com.artistas.schemas.ErrorResponse;
+import com.artistas.schemas.RateLimitErrorResponse;
 import com.artistas.services.AlbumService;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
@@ -43,6 +45,16 @@ public class AlbumResource {
             responseCode = "200",
             description = "List of albums",
             content = @Content(schema = @Schema(implementation = AlbumPaginatedResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "429",
+            description = "Rate limit exceeded",
+            content = @Content(schema = @Schema(implementation = RateLimitErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     public Response list(
@@ -70,7 +82,21 @@ public class AlbumResource {
             description = "Album found",
             content = @Content(schema = @Schema(implementation = AlbumResponse.class))
         ),
-        @APIResponse(responseCode = "404", description = "Album not found")
+        @APIResponse(
+            responseCode = "404",
+            description = "Album not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "429",
+            description = "Rate limit exceeded",
+            content = @Content(schema = @Schema(implementation = RateLimitErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
     })
     public Response findById(
         @Parameter(description = "Album ID", required = true)
@@ -89,9 +115,31 @@ public class AlbumResource {
             description = "Album created",
             content = @Content(schema = @Schema(implementation = AlbumResponse.class))
         ),
-        @APIResponse(responseCode = "400", description = "Invalid request data"),
-        @APIResponse(responseCode = "401", description = "Authentication required"),
-        @APIResponse(responseCode = "404", description = "Artist not found")
+        @APIResponse(
+            responseCode = "400",
+            description = "Invalid request data",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "401",
+            description = "Authentication required",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "404",
+            description = "Artist not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "429",
+            description = "Rate limit exceeded",
+            content = @Content(schema = @Schema(implementation = RateLimitErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
     })
     public Response create(@Valid AlbumRequest request) {
         AlbumResponse response = albumService.create(request);
@@ -108,9 +156,31 @@ public class AlbumResource {
             description = "Album updated",
             content = @Content(schema = @Schema(implementation = AlbumResponse.class))
         ),
-        @APIResponse(responseCode = "400", description = "Invalid request data"),
-        @APIResponse(responseCode = "401", description = "Authentication required"),
-        @APIResponse(responseCode = "404", description = "Album or artist not found")
+        @APIResponse(
+            responseCode = "400",
+            description = "Invalid request data",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "401",
+            description = "Authentication required",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "404",
+            description = "Album or artist not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "429",
+            description = "Rate limit exceeded",
+            content = @Content(schema = @Schema(implementation = RateLimitErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
     })
     public Response update(
         @Parameter(description = "Album ID", required = true)
