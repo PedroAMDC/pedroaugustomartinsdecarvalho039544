@@ -168,14 +168,14 @@ export default function ArtistaDetalhesPage() {
         {/* Albums section */}
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">
-            &Aacute;lbuns ({artista.albuns.length})
+            Álbuns ({artista.albuns.length})
           </h2>
 
           {artista.albuns.length === 0 ? (
             <div className="rounded-lg border border-dashed p-8 text-center">
               <Disc3 className="mx-auto mb-3 h-10 w-10 text-[var(--muted-foreground)]" />
               <p className="text-[var(--muted-foreground)]">
-                Nenhum &aacute;lbum cadastrado para este artista.
+                Nenhum álbum cadastrado para este artista.
               </p>
             </div>
           ) : (
