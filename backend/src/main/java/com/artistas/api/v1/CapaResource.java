@@ -2,6 +2,8 @@ package com.artistas.api.v1;
 
 import com.artistas.schemas.CapaAlbumResponse;
 import com.artistas.schemas.CapaPresignedUrlResponse;
+import com.artistas.schemas.ErrorResponse;
+import com.artistas.schemas.RateLimitErrorResponse;
 import com.artistas.services.CapaService;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
@@ -42,9 +44,31 @@ public class CapaResource {
             description = "Cover uploaded successfully",
             content = @Content(schema = @Schema(implementation = CapaAlbumResponse.class))
         ),
-        @APIResponse(responseCode = "400", description = "Invalid file type or missing file"),
-        @APIResponse(responseCode = "401", description = "Authentication required"),
-        @APIResponse(responseCode = "404", description = "Album not found")
+        @APIResponse(
+            responseCode = "400",
+            description = "Invalid file type or missing file",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "401",
+            description = "Authentication required",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "404",
+            description = "Album not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "429",
+            description = "Rate limit exceeded",
+            content = @Content(schema = @Schema(implementation = RateLimitErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
     })
     public Response upload(
         @Parameter(description = "Album ID", required = true)
@@ -64,7 +88,21 @@ public class CapaResource {
             description = "Presigned URL generated",
             content = @Content(schema = @Schema(implementation = CapaPresignedUrlResponse.class))
         ),
-        @APIResponse(responseCode = "404", description = "Cover or album not found")
+        @APIResponse(
+            responseCode = "404",
+            description = "Cover or album not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "429",
+            description = "Rate limit exceeded",
+            content = @Content(schema = @Schema(implementation = RateLimitErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
     })
     public Response getPresignedUrl(
         @Parameter(description = "Album ID", required = true)
@@ -82,8 +120,26 @@ public class CapaResource {
     @Operation(summary = "Delete album cover", description = "Removes a cover image from MinIO and database (authentication required)")
     @APIResponses({
         @APIResponse(responseCode = "204", description = "Cover deleted successfully"),
-        @APIResponse(responseCode = "401", description = "Authentication required"),
-        @APIResponse(responseCode = "404", description = "Cover or album not found")
+        @APIResponse(
+            responseCode = "401",
+            description = "Authentication required",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "404",
+            description = "Cover or album not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "429",
+            description = "Rate limit exceeded",
+            content = @Content(schema = @Schema(implementation = RateLimitErrorResponse.class))
+        ),
+        @APIResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
     })
     public Response delete(
         @Parameter(description = "Album ID", required = true)
