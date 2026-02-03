@@ -1,9 +1,11 @@
 import axios, {
   AxiosError,
   AxiosInstance,
+  AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
 import type { LoginResponse, ApiError } from '@/types/api';
+import { rateLimitEvents } from './rate-limit-events';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
@@ -75,9 +77,27 @@ const processQueue = (error: unknown, token: string | null = null): void => {
   failedQueue = [];
 };
 
+// Helper to extract rate limit headers
+const extractRateLimitHeaders = (response: AxiosResponse): void => {
+  const limit = response.headers['x-ratelimit-limit'];
+  const remaining = response.headers['x-ratelimit-remaining'];
+  const reset = response.headers['x-ratelimit-reset'];
+
+  if (limit && remaining && reset) {
+    rateLimitEvents.emitHeadersUpdate(
+      parseInt(limit, 10),
+      parseInt(remaining, 10),
+      parseInt(reset, 10)
+    );
+  }
+};
+
 // Response interceptor - handle errors and refresh token
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    extractRateLimitHeaders(response);
+    return response;
+  },
   async (error: AxiosError<ApiError>) => {
     const originalRequest = error.config;
 
@@ -152,6 +172,18 @@ api.interceptors.response.use(
       } finally {
         isRefreshing = false;
       }
+    }
+
+    // Handle 429 - Rate Limit Exceeded
+    if (error.response?.status === 429) {
+      const retryAfterHeader = error.response.headers['retry-after'];
+      const retryAfterBody = (error.response.data as { retryAfter?: number })?.retryAfter;
+      const retryAfter = parseInt(retryAfterHeader, 10) || retryAfterBody || 60;
+
+      console.warn(`Rate limit exceeded. Retry after ${retryAfter} seconds.`);
+      rateLimitEvents.emitRateLimit(retryAfter);
+
+      return Promise.reject(error);
     }
 
     // Handle 403 - Forbidden

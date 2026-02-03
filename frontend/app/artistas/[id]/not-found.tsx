@@ -10,9 +10,9 @@ export default function ArtistaNotFound() {
         <div className="mb-6 rounded-full bg-[var(--muted)] p-6">
           <UserX className="h-12 w-12 text-[var(--muted-foreground)]" />
         </div>
-        <h1 className="mb-2 text-2xl font-bold">Artista n&atilde;o encontrado</h1>
+        <h1 className="mb-2 text-2xl font-bold">Artista não encontrado</h1>
         <p className="mb-6 text-[var(--muted-foreground)]">
-          O artista que voc&ecirc; est&aacute; procurando n&atilde;o existe ou foi removido.
+          O artista que você está procurando não existe ou foi removido.
         </p>
         <Button asChild>
           <Link href="/artistas">
