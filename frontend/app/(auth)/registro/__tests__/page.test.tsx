@@ -14,15 +14,6 @@ vi.mock('@/hooks/useAuth', () => ({
   }),
 }));
 
-// Mock next/navigation
-const mockPush = vi.fn();
-vi.mock('next/navigation', () => ({
-  useRouter: () => ({
-    push: mockPush,
-    replace: vi.fn(),
-    prefetch: vi.fn(),
-  }),
-}));
 
 describe('RegisterPage', () => {
   beforeEach(() => {
@@ -249,6 +240,16 @@ describe('RegisterPage', () => {
 
   describe('redirect após registro', () => {
     it('should redirect to home on successful registration', async () => {
+      const locationHrefSpy = vi.fn();
+      Object.defineProperty(window, 'location', {
+        value: { href: '' },
+        writable: true,
+      });
+      Object.defineProperty(window.location, 'href', {
+        set: locationHrefSpy,
+        get: () => '',
+      });
+
       mockRegister.mockResolvedValueOnce(undefined);
       const user = userEvent.setup();
       render(<RegisterPage />);
@@ -260,7 +261,7 @@ describe('RegisterPage', () => {
       await user.click(screen.getByRole('button', { name: /criar conta/i }));
 
       await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith('/');
+        expect(locationHrefSpy).toHaveBeenCalledWith('/');
       });
     });
   });
