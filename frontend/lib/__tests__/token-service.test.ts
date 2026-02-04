@@ -1,3 +1,4 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { tokenService } from '../token-service';
 
 vi.mock('@/lib/api', () => ({
