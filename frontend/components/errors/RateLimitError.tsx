@@ -37,7 +37,6 @@ export function RateLimitError({
         if (next <= 0) {
           clearInterval(timer);
           completedRef.current = true;
-          setTimeout(() => onRetryRef.current?.(), 500);
           return 0;
         }
         return next;
@@ -49,8 +48,7 @@ export function RateLimitError({
 
   const handleComplete = useCallback(() => {
     completedRef.current = true;
-    setTimeout(() => onRetry?.(), 500);
-  }, [onRetry]);
+  }, []);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-sm">
@@ -100,7 +98,7 @@ export function RateLimitError({
               </div>
 
               <p className="text-sm text-[var(--muted-foreground)]">
-                A página será atualizada automaticamente
+                Aguarde o tempo restante para continuar
               </p>
             </>
           ) : (

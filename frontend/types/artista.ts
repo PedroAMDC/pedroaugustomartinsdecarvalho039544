@@ -12,6 +12,7 @@ export interface AlbumSummary {
   id: number;
   titulo: string;
   anoLancamento: number;
+  capaUrl: string | null;
 }
 
 export interface ArtistaDetail extends Omit<Artista, 'quantidadeAlbuns'> {
