@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -41,7 +40,6 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { login } = useAuth();
-  const router = useRouter();
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -53,7 +51,7 @@ export default function LoginPage() {
     setError(null);
     try {
       await login(data.email, data.password);
-      router.push('/');
+      window.location.href = '/';
     } catch (err) {
       const axiosError = err as AxiosError<ApiError>;
       if (axiosError.response?.status === 401) {

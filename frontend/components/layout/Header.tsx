@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Navigation } from './Navigation';
 import { UserMenu } from './UserMenu';
 import { MobileMenu } from './MobileMenu';
+import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { VinylDisc } from '@/components/common/LoadingSpinner';
 
 export function Header() {
@@ -20,6 +21,7 @@ export function Header() {
         <Navigation className="hidden md:flex" />
 
         <div className="ml-auto flex items-center gap-2">
+          <ThemeToggle />
           <div className="hidden md:block">
             <UserMenu />
           </div>
