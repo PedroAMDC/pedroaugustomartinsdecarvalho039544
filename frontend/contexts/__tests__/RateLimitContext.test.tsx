@@ -5,7 +5,11 @@ import { RateLimitProvider, useRateLimit, useRateLimitState } from '../RateLimit
 import { rateLimitEvents } from '@/lib/rate-limit-events';
 
 vi.mock('@/components/errors/RateLimitError', () => ({
-  RateLimitError: ({ retryAfter, onRetry, onDismiss }: {
+  RateLimitError: ({
+    retryAfter,
+    onRetry,
+    onDismiss,
+  }: {
     retryAfter: number;
     onRetry: () => void;
     onDismiss: () => void;

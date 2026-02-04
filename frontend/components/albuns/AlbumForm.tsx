@@ -50,9 +50,7 @@ const albumSchema = z.object({
     .int('Ano deve ser um número inteiro')
     .min(1900, 'Ano deve ser maior que 1900')
     .max(currentYear + 1, 'Ano inválido'),
-  artistaIds: z
-    .array(z.number())
-    .min(1, 'Selecione pelo menos um artista'),
+  artistaIds: z.array(z.number()).min(1, 'Selecione pelo menos um artista'),
 });
 
 type AlbumFormData = z.infer<typeof albumSchema>;
@@ -74,9 +72,7 @@ export function AlbumForm({ album, onSuccess }: AlbumFormProps) {
 
   const isEditMode = !!album;
   const title = isEditMode ? 'Editar Álbum' : 'Novo Álbum';
-  const description = isEditMode
-    ? 'Atualize os dados do álbum'
-    : 'Preencha os dados do novo álbum';
+  const description = isEditMode ? 'Atualize os dados do álbum' : 'Preencha os dados do novo álbum';
 
   const form = useForm<AlbumFormData>({
     resolver: zodResolver(albumSchema),
@@ -91,7 +87,6 @@ export function AlbumForm({ album, onSuccess }: AlbumFormProps) {
   const selectedArtistIds = form.watch('artistaIds');
   const capaFileRef = useRef<File | null>(null);
 
-  // Load artists list
   useEffect(() => {
     const loadArtistas = async () => {
       try {
@@ -106,7 +101,6 @@ export function AlbumForm({ album, onSuccess }: AlbumFormProps) {
     loadArtistas();
   }, []);
 
-  // Load current cover URL in edit mode
   useEffect(() => {
     const loadCapaUrl = async () => {
       if (album && album.capas && album.capas.length > 0) {
@@ -114,9 +108,7 @@ export function AlbumForm({ album, onSuccess }: AlbumFormProps) {
           const capa = album.capas[0];
           const response = await albumService.getCapaUrl(album.id, capa.id);
           setCurrentCapaUrl(response.url);
-        } catch {
-          // Silently fail - cover might not be accessible
-        }
+        } catch {}
       }
     };
     loadCapaUrl();
@@ -150,16 +142,12 @@ export function AlbumForm({ album, onSuccess }: AlbumFormProps) {
         albumId = newAlbum.id;
       }
 
-      // Upload cover if selected
       if (capaFileRef.current) {
-        // Delete existing covers before uploading new one (replace behavior)
         if (isEditMode && album && album.capas && album.capas.length > 0) {
           for (const capa of album.capas) {
             try {
               await albumService.deleteCapa(albumId, capa.id);
-            } catch {
-              // Continue even if delete fails
-            }
+            } catch {}
           }
         }
 
@@ -189,9 +177,7 @@ export function AlbumForm({ album, onSuccess }: AlbumFormProps) {
 
   const handleCancel = () => {
     if (isDirty || capaFile) {
-      const confirmed = window.confirm(
-        'Você tem alterações não salvas. Deseja realmente sair?'
-      );
+      const confirmed = window.confirm('Você tem alterações não salvas. Deseja realmente sair?');
       if (!confirmed) {
         return;
       }
@@ -224,9 +210,7 @@ export function AlbumForm({ album, onSuccess }: AlbumFormProps) {
     );
   };
 
-  const selectedArtistas = artistas.filter((a) =>
-    selectedArtistIds.includes(a.id)
-  );
+  const selectedArtistas = artistas.filter((a) => selectedArtistIds.includes(a.id));
 
   return (
     <div className="flex justify-center">
@@ -279,7 +263,6 @@ export function AlbumForm({ album, onSuccess }: AlbumFormProps) {
                         {...field}
                         onChange={(e) => {
                           const value = e.target.value;
-                          // Limit to 4 digits
                           if (value.length <= 4) {
                             field.onChange(value === '' ? undefined : Number(value));
                           }
@@ -387,12 +370,7 @@ export function AlbumForm({ album, onSuccess }: AlbumFormProps) {
             </CardContent>
 
             <CardFooter className="flex justify-end gap-4 pt-6">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleCancel}
-                disabled={isLoading}
-              >
+              <Button type="button" variant="outline" onClick={handleCancel} disabled={isLoading}>
                 Cancelar
               </Button>
               <Button type="submit" disabled={isLoading || loadingArtistas}>

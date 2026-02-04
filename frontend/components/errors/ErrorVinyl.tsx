@@ -12,12 +12,7 @@ interface ErrorVinylProps {
   progress?: number;
 }
 
-export function ErrorVinyl({
-  variant,
-  size = 200,
-  className,
-  progress = 0,
-}: ErrorVinylProps) {
+export function ErrorVinyl({ variant, size = 200, className, progress = 0 }: ErrorVinylProps) {
   const uniqueId = useId();
   const discCenter = 50;
 
@@ -46,13 +41,7 @@ export function ErrorVinyl({
           <stop offset="100%" stopColor="#8b6914" />
         </radialGradient>
 
-        <linearGradient
-          id={`${uniqueId}-shine`}
-          x1="0%"
-          y1="0%"
-          x2="100%"
-          y2="100%"
-        >
+        <linearGradient id={`${uniqueId}-shine`} x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="white" stopOpacity="0.15" />
           <stop offset="50%" stopColor="white" stopOpacity="0" />
           <stop offset="100%" stopColor="white" stopOpacity="0.08" />
@@ -66,10 +55,7 @@ export function ErrorVinyl({
 
         {isPaused && (
           <clipPath id={`${uniqueId}-progress-clip`}>
-            <path
-              d={describeArc(discCenter, discCenter, 48, 0, progress * 360)}
-              fill="none"
-            />
+            <path d={describeArc(discCenter, discCenter, 48, 0, progress * 360)} fill="none" />
           </clipPath>
         )}
       </defs>
@@ -84,12 +70,7 @@ export function ErrorVinyl({
       >
         <circle cx={discCenter} cy={discCenter} r="46" fill="#2a2a2a" />
 
-        <circle
-          cx={discCenter}
-          cy={discCenter}
-          r="45"
-          fill={`url(#${uniqueId}-disc)`}
-        />
+        <circle cx={discCenter} cy={discCenter} r="45" fill={`url(#${uniqueId}-disc)`} />
 
         {[42, 40, 38, 36, 34, 32, 30, 28, 26, 24, 22, 20, 18].map((r, i) => (
           <circle
@@ -139,14 +120,7 @@ export function ErrorVinyl({
 
         {isSpinning && (
           <g className="animate-scratch-flash">
-            <line
-              x1="25"
-              y1="35"
-              x2="75"
-              y2="65"
-              stroke="rgba(255,255,255,0.3)"
-              strokeWidth="1"
-            />
+            <line x1="25" y1="35" x2="75" y2="65" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
             <line
               x1="30"
               y1="60"
@@ -158,12 +132,7 @@ export function ErrorVinyl({
           </g>
         )}
 
-        <circle
-          cx={discCenter}
-          cy={discCenter}
-          r="15"
-          fill={`url(#${uniqueId}-label)`}
-        />
+        <circle cx={discCenter} cy={discCenter} r="15" fill={`url(#${uniqueId}-label)`} />
 
         <circle
           cx={discCenter}
@@ -263,19 +232,7 @@ function describeArc(
   const end = polarToCartesian(x, y, radius, startAngle);
   const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
 
-  return [
-    'M',
-    start.x,
-    start.y,
-    'A',
-    radius,
-    radius,
-    0,
-    largeArcFlag,
-    0,
-    end.x,
-    end.y,
-  ].join(' ');
+  return ['M', start.x, start.y, 'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y].join(' ');
 }
 
 function polarToCartesian(

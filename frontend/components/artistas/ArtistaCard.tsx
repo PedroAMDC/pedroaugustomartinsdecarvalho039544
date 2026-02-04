@@ -36,8 +36,7 @@ export function ArtistaCard({ artista, onClick }: ArtistaCardProps) {
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Disc3 className="h-4 w-4" />
           <span>
-            {artista.quantidadeAlbuns}{' '}
-            {artista.quantidadeAlbuns === 1 ? 'álbum' : 'álbuns'}
+            {artista.quantidadeAlbuns} {artista.quantidadeAlbuns === 1 ? 'álbum' : 'álbuns'}
           </span>
         </div>
       </CardContent>

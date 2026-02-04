@@ -14,9 +14,7 @@ export function Header() {
 
         <Link href="/" className="mr-6 flex items-center gap-2">
           <VinylDisc size={28} spinning={false} />
-          <span className="hidden font-bold sm:inline-block">
-            Artistas e Álbuns
-          </span>
+          <span className="hidden font-bold sm:inline-block">Artistas e Álbuns</span>
         </Link>
 
         <Navigation className="hidden md:flex" />

@@ -1,15 +1,9 @@
-import axios, {
-  AxiosError,
-  AxiosInstance,
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-} from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import type { LoginResponse, ApiError } from '@/types/api';
 import { rateLimitEvents } from './rate-limit-events';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
-// Create axios instance
 const api: AxiosInstance = axios.create({
   baseURL: API_URL,
   headers: {
@@ -18,11 +12,9 @@ const api: AxiosInstance = axios.create({
   timeout: 10000,
 });
 
-// Token storage keys
 const TOKEN_KEY = 'token';
 const REFRESH_TOKEN_KEY = 'refreshToken';
 
-// Helper functions for token management
 export const getToken = (): string | null => {
   if (typeof window === 'undefined') return null;
   return localStorage.getItem(TOKEN_KEY);
@@ -45,7 +37,6 @@ export const clearTokens = (): void => {
   document.cookie = 'token=; path=/; max-age=0';
 };
 
-// Request interceptor - add auth token
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = getToken();
@@ -59,7 +50,6 @@ api.interceptors.request.use(
   }
 );
 
-// Flag to prevent multiple refresh attempts
 let isRefreshing = false;
 let failedQueue: Array<{
   resolve: (token: string) => void;
@@ -77,7 +67,6 @@ const processQueue = (error: unknown, token: string | null = null): void => {
   failedQueue = [];
 };
 
-// Helper to extract rate limit headers
 const extractRateLimitHeaders = (response: AxiosResponse): void => {
   const limit = response.headers['x-ratelimit-limit'];
   const remaining = response.headers['x-ratelimit-remaining'];
@@ -92,7 +81,6 @@ const extractRateLimitHeaders = (response: AxiosResponse): void => {
   }
 };
 
-// Response interceptor - handle errors and refresh token
 api.interceptors.response.use(
   (response) => {
     extractRateLimitHeaders(response);
@@ -101,9 +89,7 @@ api.interceptors.response.use(
   async (error: AxiosError<ApiError>) => {
     const originalRequest = error.config;
 
-    // Handle 401 - Unauthorized
     if (error.response?.status === 401 && originalRequest) {
-      // Skip token refresh logic for auth endpoints (login, register)
       const isAuthEndpoint =
         originalRequest.url?.includes('/auth/login') ||
         originalRequest.url?.includes('/auth/register');
@@ -114,11 +100,9 @@ api.interceptors.response.use(
 
       const refreshToken = getRefreshToken();
 
-      // No refresh token or already tried refresh
       if (
         !refreshToken ||
-        (originalRequest as InternalAxiosRequestConfig & { _retry?: boolean })
-          ._retry
+        (originalRequest as InternalAxiosRequestConfig & { _retry?: boolean })._retry
       ) {
         clearTokens();
         if (typeof window !== 'undefined') {
@@ -128,7 +112,6 @@ api.interceptors.response.use(
       }
 
       if (isRefreshing) {
-        // Queue requests while refreshing
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
@@ -141,9 +124,7 @@ api.interceptors.response.use(
           .catch((err) => Promise.reject(err));
       }
 
-      (
-        originalRequest as InternalAxiosRequestConfig & { _retry?: boolean }
-      )._retry = true;
+      (originalRequest as InternalAxiosRequestConfig & { _retry?: boolean })._retry = true;
       isRefreshing = true;
 
       try {
@@ -174,26 +155,14 @@ api.interceptors.response.use(
       }
     }
 
-    // Handle 429 - Rate Limit Exceeded
     if (error.response?.status === 429) {
       const retryAfterHeader = error.response.headers['retry-after'];
       const retryAfterBody = (error.response.data as { retryAfter?: number })?.retryAfter;
       const retryAfter = parseInt(retryAfterHeader, 10) || retryAfterBody || 60;
 
-      console.warn(`Rate limit exceeded. Retry after ${retryAfter} seconds.`);
       rateLimitEvents.emitRateLimit(retryAfter);
 
       return Promise.reject(error);
-    }
-
-    // Handle 403 - Forbidden
-    if (error.response?.status === 403) {
-      console.error('Access forbidden:', error.response.data?.message);
-    }
-
-    // Handle 500 - Server Error
-    if (error.response?.status === 500) {
-      console.error('Server error:', error.response.data?.message);
     }
 
     return Promise.reject(error);

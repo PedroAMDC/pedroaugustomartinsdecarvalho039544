@@ -81,9 +81,7 @@ class TokenService {
     }
   }
 
-  private async performRefresh(
-    onRefresh?: (token: string) => void
-  ): Promise<void> {
+  private async performRefresh(onRefresh?: (token: string) => void): Promise<void> {
     const refreshToken = this.getRefreshToken();
     if (!refreshToken) return;
 

@@ -1,11 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { artistaService } from '../artista-service';
 import api from '../api';
-import type {
-  Artista,
-  ArtistaDetail,
-  PaginatedResponse,
-} from '@/types/artista';
+import type { Artista, ArtistaDetail, PaginatedResponse } from '@/types/artista';
 
 vi.mock('../api');
 
@@ -164,7 +160,9 @@ describe('ArtistaService', () => {
       const error = { response: { status: 404, data: { message: 'Not found' } } };
       vi.mocked(api.put).mockRejectedValue(error);
 
-      await expect(artistaService.update(999, { nome: 'Test', tipo: 'CANTOR' })).rejects.toEqual(error);
+      await expect(artistaService.update(999, { nome: 'Test', tipo: 'CANTOR' })).rejects.toEqual(
+        error
+      );
     });
   });
 });

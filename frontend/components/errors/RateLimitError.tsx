@@ -12,11 +12,7 @@ interface RateLimitErrorProps {
   onDismiss?: () => void;
 }
 
-export function RateLimitError({
-  retryAfter,
-  onRetry,
-  onDismiss,
-}: RateLimitErrorProps) {
+export function RateLimitError({ retryAfter, onRetry, onDismiss }: RateLimitErrorProps) {
   const [secondsLeft, setSecondsLeft] = useState(retryAfter);
   const completedRef = useRef(false);
   const onRetryRef = useRef(onRetry);
@@ -90,11 +86,7 @@ export function RateLimitError({
           {!isComplete ? (
             <>
               <div className="mb-6">
-                <CountdownTimer
-                  seconds={retryAfter}
-                  onComplete={handleComplete}
-                  size="lg"
-                />
+                <CountdownTimer seconds={retryAfter} onComplete={handleComplete} size="lg" />
               </div>
 
               <p className="text-sm text-[var(--muted-foreground)]">
@@ -116,10 +108,9 @@ export function RateLimitError({
 
           <div className="mt-8 rounded-lg bg-[var(--muted)] p-4">
             <p className="text-xs text-[var(--muted-foreground)]">
-              <strong>Requisito Técnico Sênior:</strong> Este sistema
-              implementa rate limiting de acordo com as especificações
-              do edital para proteger a integridade da API e garantir acesso
-              justo a todos os usuários.
+              <strong>Requisito Técnico Sênior:</strong> Este sistema implementa rate limiting de
+              acordo com as especificações do edital para proteger a integridade da API e garantir
+              acesso justo a todos os usuários.
             </p>
             <a
               href="https://seletivo.seplag.mt.gov.br/ver-edital/397"
@@ -144,7 +135,5 @@ export function RateLimitOverlay({
   retryAfter: number;
   onComplete: () => void;
 }) {
-  return (
-    <RateLimitError retryAfter={retryAfter} onRetry={onComplete} />
-  );
+  return <RateLimitError retryAfter={retryAfter} onRetry={onComplete} />;
 }
