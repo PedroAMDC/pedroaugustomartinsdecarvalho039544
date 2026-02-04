@@ -19,12 +19,20 @@ public class AlbumSummaryResponse {
     @Schema(description = "Creation timestamp", examples = {"2026-01-15T10:30:00Z"})
     public Instant createdAt;
 
+    @Schema(description = "Presigned URL for the primary cover image", nullable = true)
+    public String capaUrl;
+
     public static AlbumSummaryResponse of(Album album) {
+        return of(album, null);
+    }
+
+    public static AlbumSummaryResponse of(Album album, String capaUrl) {
         AlbumSummaryResponse response = new AlbumSummaryResponse();
         response.id = album.id;
         response.titulo = album.titulo;
         response.anoLancamento = album.anoLancamento;
         response.createdAt = album.createdAt;
+        response.capaUrl = capaUrl;
         return response;
     }
 }
