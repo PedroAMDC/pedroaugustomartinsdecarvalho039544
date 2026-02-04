@@ -1,6 +1,6 @@
+import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import { NotificationProvider, showAlbumNotification } from '../NotificationToast';
-import { MESSAGE_TYPES } from '@/types/notification';
 
 vi.mock('@/hooks/useAuth', () => ({
   useAuth: () => ({ isAuthenticated: false }),

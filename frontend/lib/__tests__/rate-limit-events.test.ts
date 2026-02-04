@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { rateLimitEvents } from '../rate-limit-events';
 
 describe('RateLimitEventEmitter', () => {
