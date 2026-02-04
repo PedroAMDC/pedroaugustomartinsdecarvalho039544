@@ -10,6 +10,13 @@ RUN mvn dependency:go-offline -B
 
 COPY src ./src
 
+RUN if [ ! -f src/main/resources/privateKey.pem ]; then \
+      cp src/main/resources/privateKey.example.pem src/main/resources/privateKey.pem; \
+    fi && \
+    if [ ! -f src/main/resources/publicKey.pem ]; then \
+      cp src/main/resources/publicKey.example.pem src/main/resources/publicKey.pem; \
+    fi
+
 RUN mvn package -DskipTests -Dquarkus.package.type=uber-jar
 
 FROM eclipse-temurin:21-jre-alpine

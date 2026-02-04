@@ -1,0 +1,71 @@
+package com.artistas.filters;
+
+import com.artistas.services.exceptions.AuthenticationException;
+import com.artistas.services.exceptions.ConflictException;
+import com.artistas.services.exceptions.InvalidTokenException;
+import com.artistas.services.exceptions.NotFoundException;
+import com.artistas.services.exceptions.RateLimitException;
+import com.artistas.services.exceptions.StorageException;
+import com.artistas.services.exceptions.ValidationException;
+import jakarta.ws.rs.core.Response;
+import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import java.util.Map;
+
+public class ExceptionMappers {
+
+    @ServerExceptionMapper
+    public Response mapAuthenticationException(AuthenticationException ex) {
+        return Response.status(Response.Status.UNAUTHORIZED)
+            .entity(Map.of("error", ex.getMessage()))
+            .build();
+    }
+
+    @ServerExceptionMapper
+    public Response mapValidationException(ValidationException ex) {
+        return Response.status(Response.Status.BAD_REQUEST)
+            .entity(Map.of("error", ex.getMessage()))
+            .build();
+    }
+
+    @ServerExceptionMapper
+    public Response mapConflictException(ConflictException ex) {
+        return Response.status(Response.Status.CONFLICT)
+            .entity(Map.of("error", ex.getMessage()))
+            .build();
+    }
+
+    @ServerExceptionMapper
+    public Response mapInvalidTokenException(InvalidTokenException ex) {
+        return Response.status(Response.Status.UNAUTHORIZED)
+            .entity(Map.of("error", ex.getMessage()))
+            .build();
+    }
+
+    @ServerExceptionMapper
+    public Response mapNotFoundException(NotFoundException ex) {
+        return Response.status(Response.Status.NOT_FOUND)
+            .entity(Map.of("error", ex.getMessage()))
+            .build();
+    }
+
+    @ServerExceptionMapper
+    public Response mapStorageException(StorageException ex) {
+        return Response.status(Response.Status.BAD_GATEWAY)
+            .entity(Map.of("error", ex.getMessage()))
+            .build();
+    }
+
+    @ServerExceptionMapper
+    public Response mapRateLimitException(RateLimitException ex) {
+        return Response.status(429)
+            .header("Retry-After", ex.getRetryAfterSeconds())
+            .header("X-RateLimit-Limit", 10)
+            .header("X-RateLimit-Remaining", 0)
+            .entity(Map.of(
+                "error", "Too Many Requests",
+                "message", ex.getMessage(),
+                "retryAfter", ex.getRetryAfterSeconds()
+            ))
+            .build();
+    }
+}
