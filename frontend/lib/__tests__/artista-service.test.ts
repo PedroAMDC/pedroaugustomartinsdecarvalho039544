@@ -23,8 +23,8 @@ const mockArtistaDetail: ArtistaDetail = {
   tipo: 'CANTOR',
   createdAt: '2025-01-01T00:00:00Z',
   albuns: [
-    { id: 1, titulo: 'Album 1', anoLancamento: 2020 },
-    { id: 2, titulo: 'Album 2', anoLancamento: 2021 },
+    { id: 1, titulo: 'Album 1', anoLancamento: 2020, capaUrl: null },
+    { id: 2, titulo: 'Album 2', anoLancamento: 2021, capaUrl: null },
   ],
 };
 
