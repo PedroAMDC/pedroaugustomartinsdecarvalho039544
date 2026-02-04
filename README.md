@@ -14,7 +14,7 @@
 ## Stack Tecnológico
 
 ### Backend
-- **Linguagem:** Java 17+
+- **Linguagem:** Java 21
 - **Framework:** Quarkus
 - **Build Tool:** Maven
 - **Banco de Dados:** PostgreSQL 16
@@ -74,31 +74,7 @@ cp .env.example .env
 
 O arquivo `.env.example` contem valores padrao prontos para uso local. Edite o `.env` apenas se precisar personalizar alguma configuracao (ver tabela de variaveis abaixo).
 
-**3. Configurar chaves RSA para JWT:**
-
-As chaves RSA sao necessarias para autenticacao JWT. Escolha uma das opcoes:
-
-**Opcao A - Copiar chaves de exemplo (recomendado para avaliacao rapida):**
-
-```bash
-cd backend/src/main/resources
-cp privateKey.example.pem privateKey.pem
-cp publicKey.example.pem publicKey.pem
-cd ../../../..
-```
-
-**Opcao B - Gerar chaves novas (recomendado para producao):**
-
-```bash
-cd backend/src/main/resources
-openssl genrsa -out privateKey.pem 2048
-openssl rsa -in privateKey.pem -pubout -out publicKey.pem
-cd ../../../..
-```
-
-> **Nota:** As chaves RSA (.pem) estao no .gitignore por seguranca.
-
-**4. Iniciar todos os servicos:**
+**3. Iniciar todos os servicos:**
 
 ```bash
 docker compose up --build
@@ -109,6 +85,26 @@ Aguarde ate que todos os containers estejam saudaveis. O backend pode levar algu
 ```
 artistas-backend  | Quarkus started in ...
 artistas-frontend | Ready in ...
+```
+
+### Chaves RSA (apenas para desenvolvimento local)
+
+> **Nota:** Ao usar `docker compose up --build`, as chaves RSA sao configuradas automaticamente durante o build. O passo abaixo so e necessario se voce quiser executar o backend localmente (fora do Docker).
+
+```bash
+cd backend/src/main/resources
+cp privateKey.example.pem privateKey.pem
+cp publicKey.example.pem publicKey.pem
+cd ../../../..
+```
+
+Para gerar chaves novas (producao):
+
+```bash
+cd backend/src/main/resources
+openssl genrsa -out privateKey.pem 2048
+openssl rsa -in privateKey.pem -pubout -out publicKey.pem
+cd ../../../..
 ```
 
 ### Variaveis de Ambiente
@@ -263,7 +259,7 @@ docker compose up --build
 java.security.spec.InvalidKeySpecException / Could not read private key
 ```
 
-As chaves RSA nao foram configuradas. Siga o passo 3 da secao "Clone e Setup" para copiar ou gerar as chaves.
+Se estiver usando Docker, reconstrua a imagem do backend: `docker compose up --build backend`. Se estiver executando localmente, copie as chaves de exemplo conforme a secao "Chaves RSA" acima.
 
 **MinIO bucket nao encontrado:**
 
@@ -317,7 +313,7 @@ docker compose up --build
 
 ```
 backend/
-├── src/main/java/com/projeto/
+├── src/main/java/com/artistas/
 │   ├── api/v1/          # REST Endpoints
 │   ├── config/          # Configurações (CORS, Security)
 │   ├── filters/         # Rate Limit Filter
