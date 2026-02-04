@@ -2,11 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { AxiosProgressEvent } from 'axios';
 import { albumService } from '../album-service';
 import api from '../api';
-import type {
-  Album,
-  CapaAlbum,
-  CapaPresignedUrlResponse,
-} from '@/types/album';
+import type { Album, CapaAlbum, CapaPresignedUrlResponse } from '@/types/album';
 import type { PaginatedResponse } from '@/types/artista';
 
 vi.mock('../api');

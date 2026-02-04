@@ -12,7 +12,7 @@ interface ImageUploadProps {
   accept?: string;
 }
 
-const DEFAULT_MAX_SIZE = 5 * 1024 * 1024; // 5MB
+const DEFAULT_MAX_SIZE = 5 * 1024 * 1024;
 const DEFAULT_ACCEPT = 'image/*';
 
 function formatFileSize(bytes: number): string {
@@ -35,7 +35,6 @@ export function ImageUpload({
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Update preview when currentImage changes
   useEffect(() => {
     if (currentImage) {
       setPreview(currentImage);
@@ -44,7 +43,6 @@ export function ImageUpload({
 
   const validateFile = useCallback(
     (file: File): string | null => {
-      // Validate type
       if (accept === 'image/*') {
         if (!file.type.startsWith('image/')) {
           return 'Arquivo deve ser uma imagem';
@@ -63,7 +61,6 @@ export function ImageUpload({
         }
       }
 
-      // Validate size
       if (file.size > maxSize) {
         return `Arquivo muito grande. Tamanho máximo: ${formatFileSize(maxSize)}`;
       }
@@ -83,15 +80,12 @@ export function ImageUpload({
         return;
       }
 
-      // Create preview
       const objectUrl = URL.createObjectURL(file);
       setPreview(objectUrl);
 
-      // Start upload
       setIsUploading(true);
       setProgress(0);
 
-      // Simulate progress (since we don't have actual progress from the API)
       const progressInterval = setInterval(() => {
         setProgress((prev) => {
           if (prev >= 90) {
@@ -156,7 +150,6 @@ export function ImageUpload({
       if (files && files.length > 0) {
         handleFile(files[0]);
       }
-      // Reset input value to allow selecting the same file again
       e.target.value = '';
     },
     [handleFile]
@@ -237,7 +230,9 @@ export function ImageUpload({
             )}
             <div className="space-y-1">
               <p className="text-sm font-medium">
-                {isDragging ? 'Solte a imagem aqui' : 'Arraste uma imagem ou clique para selecionar'}
+                {isDragging
+                  ? 'Solte a imagem aqui'
+                  : 'Arraste uma imagem ou clique para selecionar'}
               </p>
               <p className="text-xs text-muted-foreground">
                 Tamanho máximo: {formatFileSize(maxSize)}

@@ -31,7 +31,6 @@ export function useWebSocket({
   const pingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const connectRef = useRef<() => void>(() => {});
 
-  // Store handlers in refs - updated via effect
   const handlersRef = useRef({ onMessage, onConnect, onDisconnect, onError });
 
   useEffect(() => {
@@ -72,7 +71,6 @@ export function useWebSocket({
         setIsConnected(true);
         handlersRef.current.onConnect?.();
 
-        // Setup ping interval to keep connection alive
         pingIntervalRef.current = setInterval(() => {
           if (ws.readyState === WebSocket.OPEN) {
             ws.send('ping');
@@ -83,7 +81,6 @@ export function useWebSocket({
       ws.onmessage = (event) => {
         const data = event.data;
 
-        // Ignore pong responses
         if (data === 'pong') {
           return;
         }
@@ -91,9 +88,7 @@ export function useWebSocket({
         try {
           const message = JSON.parse(data) as WebSocketMessage;
           handlersRef.current.onMessage(message);
-        } catch {
-          console.error('Failed to parse WebSocket message:', data);
-        }
+        } catch {}
       };
 
       ws.onclose = () => {
@@ -105,7 +100,6 @@ export function useWebSocket({
         setIsConnected(false);
         handlersRef.current.onDisconnect?.();
 
-        // Attempt reconnection with exponential backoff
         if (enabled && reconnectAttemptsRef.current < MAX_RECONNECT_ATTEMPTS) {
           const delay = RECONNECT_INTERVAL * Math.pow(2, reconnectAttemptsRef.current);
           reconnectAttemptsRef.current += 1;

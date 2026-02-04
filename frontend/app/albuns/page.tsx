@@ -7,11 +7,7 @@ import { Plus, RefreshCw, AlertCircle, Disc3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PageContainer } from '@/components/layout';
 import { Pagination } from '@/components/common/Pagination';
-import {
-  AlbumCard,
-  AlbumFilters,
-  AlbumListSkeleton,
-} from '@/components/albuns';
+import { AlbumCard, AlbumFilters, AlbumListSkeleton } from '@/components/albuns';
 import { albumService } from '@/lib/album-service';
 import type { Album, AlbumQueryParams } from '@/types/album';
 import type { TipoArtista } from '@/types/artista';
@@ -21,16 +17,13 @@ const PAGE_SIZE = 12;
 export default function AlbunsPage() {
   const router = useRouter();
 
-  // Data state
   const [albuns, setAlbuns] = useState<Album[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Filter state
   const [tipoArtista, setTipoArtista] = useState<TipoArtista | ''>('');
   const [direction, setDirection] = useState<'asc' | 'desc'>('asc');
 
-  // Pagination state
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
@@ -41,7 +34,7 @@ export default function AlbunsPage() {
 
     try {
       const params: AlbumQueryParams = {
-        page: page - 1, // API usa 0-indexed
+        page: page - 1,
         size: PAGE_SIZE,
         direction,
       };
@@ -63,7 +56,6 @@ export default function AlbunsPage() {
     fetchAlbuns();
   }, [fetchAlbuns]);
 
-  // Reset page when filters change
   useEffect(() => {
     setPage(1);
   }, [tipoArtista, direction]);
@@ -132,11 +124,7 @@ export default function AlbunsPage() {
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {albuns.map((album) => (
-            <AlbumCard
-              key={album.id}
-              album={album}
-              onClick={() => handleAlbumClick(album.id)}
-            />
+            <AlbumCard key={album.id} album={album} onClick={() => handleAlbumClick(album.id)} />
           ))}
         </div>
       )}

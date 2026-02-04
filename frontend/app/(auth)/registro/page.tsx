@@ -84,9 +84,7 @@ export default function RegisterPage() {
           </div>
           <div className="space-y-1">
             <CardTitle className="text-2xl font-bold">Criar conta</CardTitle>
-            <CardDescription>
-              Preencha os dados para se registrar
-            </CardDescription>
+            <CardDescription>Preencha os dados para se registrar</CardDescription>
           </div>
         </CardHeader>
         <Form {...form}>

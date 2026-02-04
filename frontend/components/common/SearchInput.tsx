@@ -24,12 +24,10 @@ export function SearchInput({
   const [internalValue, setInternalValue] = useState(value);
   const debouncedValue = useDebounce(internalValue, 300);
 
-  // Sync internal value when external value changes
   useEffect(() => {
     setInternalValue(value);
   }, [value]);
 
-  // Call onChange when debounced value changes
   useEffect(() => {
     if (debouncedValue !== value) {
       onChange(debouncedValue);

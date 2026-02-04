@@ -22,12 +22,7 @@ interface VinylDiscProps {
   className?: string;
 }
 
-export function VinylDisc({
-  size,
-  showArm = false,
-  spinning = true,
-  className,
-}: VinylDiscProps) {
+export function VinylDisc({ size, showArm = false, spinning = true, className }: VinylDiscProps) {
   const viewBoxSize = showArm ? 120 : 100;
   const discCenter = 50;
   const uniqueId = useId();
@@ -69,20 +64,10 @@ export function VinylDisc({
         style={{ transformOrigin: `${discCenter}px ${discCenter}px` }}
       >
         {/* Outer edge - slightly lighter */}
-        <circle
-          cx={discCenter}
-          cy={discCenter}
-          r="46"
-          fill="#2a2a2a"
-        />
+        <circle cx={discCenter} cy={discCenter} r="46" fill="#2a2a2a" />
 
         {/* Main disc body */}
-        <circle
-          cx={discCenter}
-          cy={discCenter}
-          r="45"
-          fill={`url(#${uniqueId}-disc)`}
-        />
+        <circle cx={discCenter} cy={discCenter} r="45" fill={`url(#${uniqueId}-disc)`} />
 
         {/* Groove rings - realistic vinyl grooves */}
         {[42, 40, 38, 36, 34, 32, 30, 28, 26, 24, 22, 20, 18].map((r, i) => (
@@ -98,12 +83,7 @@ export function VinylDisc({
         ))}
 
         {/* Center label */}
-        <circle
-          cx={discCenter}
-          cy={discCenter}
-          r="15"
-          fill={`url(#${uniqueId}-label)`}
-        />
+        <circle cx={discCenter} cy={discCenter} r="15" fill={`url(#${uniqueId}-label)`} />
 
         {/* Label text area - decorative lines */}
         <circle
@@ -116,20 +96,10 @@ export function VinylDisc({
         />
 
         {/* Label decoration - small dot */}
-        <circle
-          cx={discCenter}
-          cy={discCenter - 8}
-          r="1.5"
-          fill="#e8d5b7"
-        />
+        <circle cx={discCenter} cy={discCenter - 8} r="1.5" fill="#e8d5b7" />
 
         {/* Center hole */}
-        <circle
-          cx={discCenter}
-          cy={discCenter}
-          r="3"
-          fill="#f5f0e8"
-        />
+        <circle cx={discCenter} cy={discCenter} r="3" fill="#f5f0e8" />
 
         {/* Inner ring around hole */}
         <circle
@@ -198,11 +168,7 @@ export function VinylDisc({
   );
 }
 
-export function LoadingSpinner({
-  size = 'md',
-  overlay = false,
-  className,
-}: LoadingSpinnerProps) {
+export function LoadingSpinner({ size = 'md', overlay = false, className }: LoadingSpinnerProps) {
   const config = sizeConfig[size];
 
   const spinnerContent = (

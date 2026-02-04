@@ -9,13 +9,8 @@ import type {
 } from '@/types/artista';
 
 class ArtistaService {
-  async getAll(
-    params?: ArtistaQueryParams
-  ): Promise<PaginatedResponse<Artista>> {
-    const { data } = await api.get<PaginatedResponse<Artista>>(
-      '/v1/artistas',
-      { params }
-    );
+  async getAll(params?: ArtistaQueryParams): Promise<PaginatedResponse<Artista>> {
+    const { data } = await api.get<PaginatedResponse<Artista>>('/v1/artistas', { params });
     return data;
   }
 

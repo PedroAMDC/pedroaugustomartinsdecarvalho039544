@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  createContext,
-  useState,
-  useCallback,
-  useContext,
-  useEffect,
-  type ReactNode,
-} from 'react';
+import { createContext, useState, useCallback, useContext, useEffect, type ReactNode } from 'react';
 import { RateLimitError } from '@/components/errors/RateLimitError';
 import { rateLimitEvents } from '@/lib/rate-limit-events';
 
@@ -63,17 +56,14 @@ export function RateLimitProvider({ children }: RateLimitProviderProps) {
     }));
   }, []);
 
-  const updateHeaders = useCallback(
-    (limit: number, remaining: number, reset: number) => {
-      setState((prev) => ({
-        ...prev,
-        limitReached: limit,
-        remaining,
-        resetAt: reset * 1000,
-      }));
-    },
-    []
-  );
+  const updateHeaders = useCallback((limit: number, remaining: number, reset: number) => {
+    setState((prev) => ({
+      ...prev,
+      limitReached: limit,
+      remaining,
+      resetAt: reset * 1000,
+    }));
+  }, []);
 
   useEffect(() => {
     const unsubscribeRateLimit = rateLimitEvents.onRateLimit(triggerRateLimit);

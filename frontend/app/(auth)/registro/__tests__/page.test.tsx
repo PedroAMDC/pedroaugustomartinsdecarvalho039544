@@ -52,17 +52,12 @@ describe('RegisterPage', () => {
 
     it('should render submit button', () => {
       render(<RegisterPage />);
-      expect(
-        screen.getByRole('button', { name: /criar conta/i })
-      ).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /criar conta/i })).toBeInTheDocument();
     });
 
     it('should render login link', () => {
       render(<RegisterPage />);
-      expect(screen.getByRole('link', { name: /entre/i })).toHaveAttribute(
-        'href',
-        '/login'
-      );
+      expect(screen.getByRole('link', { name: /entre/i })).toHaveAttribute('href', '/login');
     });
   });
 
@@ -74,9 +69,7 @@ describe('RegisterPage', () => {
       await user.type(screen.getByLabelText(/nome/i), 'A');
       await user.click(screen.getByRole('button', { name: /criar conta/i }));
 
-      expect(
-        await screen.findByText(/nome deve ter pelo menos 2 caracteres/i)
-      ).toBeInTheDocument();
+      expect(await screen.findByText(/nome deve ter pelo menos 2 caracteres/i)).toBeInTheDocument();
     });
   });
 
@@ -88,9 +81,7 @@ describe('RegisterPage', () => {
       await user.type(screen.getByLabelText(/nome/i), 'Test User');
       await user.click(screen.getByRole('button', { name: /criar conta/i }));
 
-      expect(
-        await screen.findByText(/email é obrigatório/i)
-      ).toBeInTheDocument();
+      expect(await screen.findByText(/email é obrigatório/i)).toBeInTheDocument();
     });
 
     it('should show error for invalid email format', async () => {
@@ -127,15 +118,10 @@ describe('RegisterPage', () => {
       await user.type(screen.getByLabelText(/nome/i), 'Test User');
       await user.type(screen.getByLabelText(/email/i), 'test@test.com');
       await user.type(screen.getByLabelText(/^senha$/i), 'password123');
-      await user.type(
-        screen.getByLabelText(/confirmar senha/i),
-        'differentpass'
-      );
+      await user.type(screen.getByLabelText(/confirmar senha/i), 'differentpass');
       await user.click(screen.getByRole('button', { name: /criar conta/i }));
 
-      expect(
-        await screen.findByText(/as senhas não conferem/i)
-      ).toBeInTheDocument();
+      expect(await screen.findByText(/as senhas não conferem/i)).toBeInTheDocument();
     });
   });
 
@@ -176,9 +162,7 @@ describe('RegisterPage', () => {
       await user.type(screen.getByLabelText(/confirmar senha/i), 'password123');
       await user.click(screen.getByRole('button', { name: /criar conta/i }));
 
-      expect(
-        await screen.findByText(/este email já está cadastrado/i)
-      ).toBeInTheDocument();
+      expect(await screen.findByText(/este email já está cadastrado/i)).toBeInTheDocument();
     });
 
     it('should show API error message', async () => {
@@ -208,9 +192,7 @@ describe('RegisterPage', () => {
       await user.type(screen.getByLabelText(/confirmar senha/i), 'password123');
       await user.click(screen.getByRole('button', { name: /criar conta/i }));
 
-      expect(
-        await screen.findByText(/erro ao criar conta/i)
-      ).toBeInTheDocument();
+      expect(await screen.findByText(/erro ao criar conta/i)).toBeInTheDocument();
     });
   });
 

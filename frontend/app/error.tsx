@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { RefreshCw, Home } from 'lucide-react';
 import Link from 'next/link';
 import { PageContainer } from '@/components/layout/PageContainer';
@@ -13,10 +12,6 @@ interface ErrorProps {
 }
 
 export default function Error({ error, reset }: ErrorProps) {
-  useEffect(() => {
-    console.error('Application error:', error);
-  }, [error]);
-
   return (
     <PageContainer>
       <div className="flex min-h-[60vh] flex-col items-center justify-center py-16 text-center">
@@ -24,17 +19,15 @@ export default function Error({ error, reset }: ErrorProps) {
           <ErrorVinyl variant="scratched" size={220} />
         </div>
 
-        <h1 className="mb-3 text-3xl font-bold tracking-tight md:text-4xl">
-          Ops! Algo deu errado
-        </h1>
+        <h1 className="mb-3 text-3xl font-bold tracking-tight md:text-4xl">Ops! Algo deu errado</h1>
 
         <h2 className="mb-2 text-lg font-medium text-[var(--muted-foreground)] md:text-xl">
           A agulha travou no disco...
         </h2>
 
         <p className="mb-8 max-w-md text-[var(--muted-foreground)]">
-          Ocorreu um erro inesperado ao processar sua solicitação.
-          Tente novamente ou volte para a página inicial.
+          Ocorreu um erro inesperado ao processar sua solicitação. Tente novamente ou volte para a
+          página inicial.
         </p>
 
         <div className="flex flex-col gap-3 sm:flex-row">

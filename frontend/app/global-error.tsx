@@ -1,17 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
-
 interface GlobalErrorProps {
   error: Error & { digest?: string };
   reset: () => void;
 }
 
 export default function GlobalError({ error, reset }: GlobalErrorProps) {
-  useEffect(() => {
-    console.error('Global error:', error);
-  }, [error]);
-
   return (
     <html lang="pt-BR">
       <body
@@ -22,8 +16,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontFamily:
-            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
           backgroundColor: '#f5f3f0',
           color: '#3d3629',
         }}
@@ -35,12 +28,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
             maxWidth: '500px',
           }}
         >
-          <svg
-            width="120"
-            height="120"
-            viewBox="0 0 100 100"
-            style={{ marginBottom: '1.5rem' }}
-          >
+          <svg width="120" height="120" viewBox="0 0 100 100" style={{ marginBottom: '1.5rem' }}>
             <circle cx="50" cy="50" r="45" fill="#1a1a1a" />
             <circle cx="50" cy="50" r="15" fill="#b8860b" />
             <circle cx="50" cy="50" r="3" fill="#f5f0e8" />
@@ -70,8 +58,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
               lineHeight: 1.6,
             }}
           >
-            Ocorreu um erro grave na aplicação.
-            Por favor, tente recarregar a página.
+            Ocorreu um erro grave na aplicação. Por favor, tente recarregar a página.
           </p>
 
           <button
