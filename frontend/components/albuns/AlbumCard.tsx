@@ -14,7 +14,6 @@ interface AlbumCardProps {
 export function AlbumCard({ album, onClick }: AlbumCardProps) {
   const [capaUrl, setCapaUrl] = useState<string | null>(null);
 
-  // Fetch cover URL on mount
   useEffect(() => {
     const loadCapa = async () => {
       if (album.capas && album.capas.length > 0) {
@@ -22,15 +21,12 @@ export function AlbumCard({ album, onClick }: AlbumCardProps) {
           const capa = album.capas[0];
           const response = await albumService.getCapaUrl(album.id, capa.id);
           setCapaUrl(response.url);
-        } catch {
-          // Silently fail - show placeholder
-        }
+        } catch {}
       }
     };
     loadCapa();
   }, [album.id, album.capas]);
 
-  // Format artists as comma-separated
   const artistasText = album.artistas.map((a) => a.nome).join(', ');
 
   return (
@@ -57,14 +53,9 @@ export function AlbumCard({ album, onClick }: AlbumCardProps) {
         <p className="font-medium truncate" title={album.titulo}>
           {album.titulo}
         </p>
-        <p className="text-sm text-[var(--muted-foreground)]">
-          {album.anoLancamento}
-        </p>
+        <p className="text-sm text-[var(--muted-foreground)]">{album.anoLancamento}</p>
         {artistasText && (
-          <p
-            className="text-xs text-[var(--muted-foreground)] truncate"
-            title={artistasText}
-          >
+          <p className="text-xs text-[var(--muted-foreground)] truncate" title={artistasText}>
             {artistasText}
           </p>
         )}

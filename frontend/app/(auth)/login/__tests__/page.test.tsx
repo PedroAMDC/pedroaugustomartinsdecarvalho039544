@@ -47,9 +47,10 @@ describe('LoginPage', () => {
 
     it('should render registration link', () => {
       render(<LoginPage />);
-      expect(
-        screen.getByRole('link', { name: /registre-se/i })
-      ).toHaveAttribute('href', '/registro');
+      expect(screen.getByRole('link', { name: /registre-se/i })).toHaveAttribute(
+        'href',
+        '/registro'
+      );
     });
   });
 
@@ -60,9 +61,7 @@ describe('LoginPage', () => {
 
       await user.click(screen.getByRole('button', { name: /entrar/i }));
 
-      expect(
-        await screen.findByText(/email é obrigatório/i)
-      ).toBeInTheDocument();
+      expect(await screen.findByText(/email é obrigatório/i)).toBeInTheDocument();
     });
 
     it('should show error for invalid email format', async () => {
@@ -87,9 +86,7 @@ describe('LoginPage', () => {
       await user.type(screen.getByLabelText(/senha/i), '12345');
       await user.click(screen.getByRole('button', { name: /entrar/i }));
 
-      expect(
-        await screen.findByText(/mínimo 6 caracteres/i)
-      ).toBeInTheDocument();
+      expect(await screen.findByText(/mínimo 6 caracteres/i)).toBeInTheDocument();
     });
   });
 
@@ -121,9 +118,7 @@ describe('LoginPage', () => {
       await user.type(screen.getByLabelText(/senha/i), 'wrongpassword');
       await user.click(screen.getByRole('button', { name: /entrar/i }));
 
-      expect(
-        await screen.findByText(/email ou senha incorretos/i)
-      ).toBeInTheDocument();
+      expect(await screen.findByText(/email ou senha incorretos/i)).toBeInTheDocument();
     });
 
     it('should show API error message', async () => {
@@ -149,9 +144,7 @@ describe('LoginPage', () => {
       await user.type(screen.getByLabelText(/senha/i), 'password123');
       await user.click(screen.getByRole('button', { name: /entrar/i }));
 
-      expect(
-        await screen.findByText(/erro ao fazer login/i)
-      ).toBeInTheDocument();
+      expect(await screen.findByText(/erro ao fazer login/i)).toBeInTheDocument();
     });
   });
 

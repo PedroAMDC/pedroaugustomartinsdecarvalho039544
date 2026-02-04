@@ -30,7 +30,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning className="overflow-hidden">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen overflow-hidden`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen overflow-hidden`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

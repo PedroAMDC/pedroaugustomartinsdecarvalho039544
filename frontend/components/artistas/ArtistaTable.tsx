@@ -59,9 +59,7 @@ export function ArtistaTable({ artistas, onRowClick }: ArtistaTableProps) {
                 <TableCell>
                   <Badge variant="secondary">{tipoLabel}</Badge>
                 </TableCell>
-                <TableCell className="text-center">
-                  {artista.quantidadeAlbuns}
-                </TableCell>
+                <TableCell className="text-center">{artista.quantidadeAlbuns}</TableCell>
                 <TableCell className="text-right text-muted-foreground">
                   {formatDate(artista.createdAt)}
                 </TableCell>

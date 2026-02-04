@@ -17,10 +17,9 @@ describe('useDebounce', () => {
   });
 
   it('should not update value before delay', () => {
-    const { result, rerender } = renderHook(
-      ({ value, delay }) => useDebounce(value, delay),
-      { initialProps: { value: 'initial', delay: 300 } }
-    );
+    const { result, rerender } = renderHook(({ value, delay }) => useDebounce(value, delay), {
+      initialProps: { value: 'initial', delay: 300 },
+    });
 
     rerender({ value: 'updated', delay: 300 });
 
@@ -32,10 +31,9 @@ describe('useDebounce', () => {
   });
 
   it('should update value after delay', () => {
-    const { result, rerender } = renderHook(
-      ({ value, delay }) => useDebounce(value, delay),
-      { initialProps: { value: 'initial', delay: 300 } }
-    );
+    const { result, rerender } = renderHook(({ value, delay }) => useDebounce(value, delay), {
+      initialProps: { value: 'initial', delay: 300 },
+    });
 
     rerender({ value: 'updated', delay: 300 });
 
@@ -47,10 +45,9 @@ describe('useDebounce', () => {
   });
 
   it('should reset timer on value change', () => {
-    const { result, rerender } = renderHook(
-      ({ value, delay }) => useDebounce(value, delay),
-      { initialProps: { value: 'initial', delay: 300 } }
-    );
+    const { result, rerender } = renderHook(({ value, delay }) => useDebounce(value, delay), {
+      initialProps: { value: 'initial', delay: 300 },
+    });
 
     rerender({ value: 'first', delay: 300 });
 
@@ -74,10 +71,9 @@ describe('useDebounce', () => {
   });
 
   it('should use default delay of 300ms', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => useDebounce(value),
-      { initialProps: { value: 'initial' } }
-    );
+    const { result, rerender } = renderHook(({ value }) => useDebounce(value), {
+      initialProps: { value: 'initial' },
+    });
 
     rerender({ value: 'updated' });
 
@@ -95,10 +91,9 @@ describe('useDebounce', () => {
   });
 
   it('should work with number values', () => {
-    const { result, rerender } = renderHook(
-      ({ value, delay }) => useDebounce(value, delay),
-      { initialProps: { value: 0, delay: 500 } }
-    );
+    const { result, rerender } = renderHook(({ value, delay }) => useDebounce(value, delay), {
+      initialProps: { value: 0, delay: 500 },
+    });
 
     rerender({ value: 42, delay: 500 });
 

@@ -21,18 +21,15 @@ const PAGE_SIZE = 12;
 export default function ArtistasPage() {
   const router = useRouter();
 
-  // Data state
   const [artistas, setArtistas] = useState<Artista[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Filter state
   const [search, setSearch] = useState('');
   const [tipo, setTipo] = useState<TipoArtista | ''>('');
   const [direction, setDirection] = useState<'asc' | 'desc'>('asc');
   const [viewMode, setViewMode] = useState<'card' | 'table'>('card');
 
-  // Pagination state
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
@@ -43,7 +40,7 @@ export default function ArtistasPage() {
 
     try {
       const params: ArtistaQueryParams = {
-        page: page - 1, // API usa 0-indexed
+        page: page - 1,
         size: PAGE_SIZE,
         sort: 'nome',
         direction,
@@ -67,7 +64,6 @@ export default function ArtistasPage() {
     fetchArtistas();
   }, [fetchArtistas]);
 
-  // Reset page when filters change
   useEffect(() => {
     setPage(1);
   }, [search, tipo, direction]);

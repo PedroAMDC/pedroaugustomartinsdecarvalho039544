@@ -38,10 +38,7 @@ import type { ArtistaDetail, TipoArtista } from '@/types/artista';
 import type { ApiError } from '@/types/api';
 
 const artistaSchema = z.object({
-  nome: z
-    .string()
-    .min(1, 'Nome é obrigatório')
-    .max(255, 'Nome deve ter no máximo 255 caracteres'),
+  nome: z.string().min(1, 'Nome é obrigatório').max(255, 'Nome deve ter no máximo 255 caracteres'),
   tipo: z.enum(['CANTOR', 'BANDA'], {
     message: 'Tipo é obrigatório',
   }),
@@ -111,9 +108,7 @@ export function ArtistaForm({ artista, onSuccess }: ArtistaFormProps) {
 
   const handleCancel = () => {
     if (isDirty) {
-      const confirmed = window.confirm(
-        'Você tem alterações não salvas. Deseja realmente sair?'
-      );
+      const confirmed = window.confirm('Você tem alterações não salvas. Deseja realmente sair?');
       if (!confirmed) {
         return;
       }
@@ -144,11 +139,7 @@ export function ArtistaForm({ artista, onSuccess }: ArtistaFormProps) {
                   <FormItem>
                     <FormLabel>Nome *</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Nome do artista"
-                        disabled={isLoading}
-                        {...field}
-                      />
+                      <Input placeholder="Nome do artista" disabled={isLoading} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -189,12 +180,7 @@ export function ArtistaForm({ artista, onSuccess }: ArtistaFormProps) {
             </CardContent>
 
             <CardFooter className="flex justify-end gap-4 pt-6">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleCancel}
-                disabled={isLoading}
-              >
+              <Button type="button" variant="outline" onClick={handleCancel} disabled={isLoading}>
                 Cancelar
               </Button>
               <Button type="submit" disabled={isLoading}>

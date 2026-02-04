@@ -12,17 +12,15 @@ export default function NotFound() {
           <ErrorVinyl variant="broken" size={220} />
         </div>
 
-        <h1 className="mb-3 text-4xl font-bold tracking-tight md:text-5xl">
-          404
-        </h1>
+        <h1 className="mb-3 text-4xl font-bold tracking-tight md:text-5xl">404</h1>
 
         <h2 className="mb-2 text-xl font-semibold text-[var(--muted-foreground)] md:text-2xl">
           Faixa Não Encontrada
         </h2>
 
         <p className="mb-8 max-w-md text-[var(--muted-foreground)]">
-          Parece que essa música saiu do setlist... A página que você
-          está procurando não existe ou foi movida para outro lugar.
+          Parece que essa música saiu do setlist... A página que você está procurando não existe ou
+          foi movida para outro lugar.
         </p>
 
         <div className="flex flex-col gap-3 sm:flex-row">

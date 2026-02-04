@@ -76,12 +76,8 @@ export default function LoginPage() {
             <VinylDisc size={72} spinning={false} />
           </div>
           <div className="space-y-1">
-            <CardTitle className="text-2xl font-bold">
-              Bem-vindo de volta
-            </CardTitle>
-            <CardDescription>
-              Entre com suas credenciais para acessar o sistema
-            </CardDescription>
+            <CardTitle className="text-2xl font-bold">Bem-vindo de volta</CardTitle>
+            <CardDescription>Entre com suas credenciais para acessar o sistema</CardDescription>
           </div>
         </CardHeader>
         <Form {...form}>

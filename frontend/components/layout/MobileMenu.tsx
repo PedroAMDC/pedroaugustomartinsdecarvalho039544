@@ -6,13 +6,7 @@ import { Menu, LogOut, User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Navigation } from './Navigation';
 
 function getInitials(name: string): string {
@@ -59,9 +53,7 @@ export function MobileMenu() {
                   </Avatar>
                   <div className="flex flex-col">
                     <span className="text-sm font-medium">{user.nome}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {user.email}
-                    </span>
+                    <span className="text-xs text-muted-foreground">{user.email}</span>
                   </div>
                 </div>
                 <Button

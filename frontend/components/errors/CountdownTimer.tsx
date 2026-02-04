@@ -65,19 +65,12 @@ export function CountdownTimer({
 
   return (
     <div
-      className={cn(
-        'relative inline-flex items-center justify-center',
-        className
-      )}
+      className={cn('relative inline-flex items-center justify-center', className)}
       role="timer"
       aria-live="polite"
       aria-label={`${secondsLeft} segundos restantes`}
     >
-      <svg
-        width={config.dimension}
-        height={config.dimension}
-        className="transform -rotate-90"
-      >
+      <svg width={config.dimension} height={config.dimension} className="transform -rotate-90">
         <circle
           cx={config.dimension / 2}
           cy={config.dimension / 2}
@@ -111,11 +104,7 @@ export function CountdownTimer({
           !isComplete && secondsLeft <= 5 && 'animate-countdown-pulse text-destructive'
         )}
       >
-        {isComplete ? (
-          <CheckIcon className="w-8 h-8 text-primary" />
-        ) : (
-          formatTime(secondsLeft)
-        )}
+        {isComplete ? <CheckIcon className="w-8 h-8 text-primary" /> : formatTime(secondsLeft)}
       </div>
     </div>
   );
@@ -130,11 +119,7 @@ function CheckIcon({ className }: { className?: string }) {
       stroke="currentColor"
       strokeWidth={3}
     >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M5 13l4 4L19 7"
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
     </svg>
   );
 }
@@ -151,11 +136,14 @@ export function useCountdown(initialSeconds: number) {
     setIsRunning(true);
   }, []);
 
-  const reset = useCallback((newSeconds?: number) => {
-    completedRef.current = false;
-    setSeconds(newSeconds ?? initialSeconds);
-    setIsRunning(false);
-  }, [initialSeconds]);
+  const reset = useCallback(
+    (newSeconds?: number) => {
+      completedRef.current = false;
+      setSeconds(newSeconds ?? initialSeconds);
+      setIsRunning(false);
+    },
+    [initialSeconds]
+  );
 
   useEffect(() => {
     if (!isRunning || completedRef.current || seconds <= 0) {
