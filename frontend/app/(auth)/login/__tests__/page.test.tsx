@@ -14,15 +14,6 @@ vi.mock('@/hooks/useAuth', () => ({
   }),
 }));
 
-// Mock next/navigation
-const mockPush = vi.fn();
-vi.mock('next/navigation', () => ({
-  useRouter: () => ({
-    push: mockPush,
-    replace: vi.fn(),
-    prefetch: vi.fn(),
-  }),
-}));
 
 describe('LoginPage', () => {
   beforeEach(() => {
@@ -193,6 +184,16 @@ describe('LoginPage', () => {
 
   describe('redirect após login', () => {
     it('should redirect to home on successful login', async () => {
+      const locationHrefSpy = vi.fn();
+      Object.defineProperty(window, 'location', {
+        value: { href: '' },
+        writable: true,
+      });
+      Object.defineProperty(window.location, 'href', {
+        set: locationHrefSpy,
+        get: () => '',
+      });
+
       mockLogin.mockResolvedValueOnce(undefined);
       const user = userEvent.setup();
       render(<LoginPage />);
@@ -202,7 +203,7 @@ describe('LoginPage', () => {
       await user.click(screen.getByRole('button', { name: /entrar/i }));
 
       await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith('/');
+        expect(locationHrefSpy).toHaveBeenCalledWith('/');
       });
     });
   });

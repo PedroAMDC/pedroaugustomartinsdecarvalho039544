@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -48,7 +47,6 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { register: registerUser } = useAuth();
-  const router = useRouter();
 
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -60,7 +58,7 @@ export default function RegisterPage() {
     setError(null);
     try {
       await registerUser(data.nome, data.email, data.password, data.confirmPassword);
-      router.push('/');
+      window.location.href = '/';
     } catch (err) {
       const axiosError = err as AxiosError<ApiError>;
       if (axiosError.response?.status === 409) {
