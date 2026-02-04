@@ -10,29 +10,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { artistaService } from '@/lib/artista-service';
-import { albumService } from '@/lib/album-service';
 import type { ArtistaDetail, AlbumSummary } from '@/types/artista';
 
 function AlbumCard({ album }: { album: AlbumSummary }) {
   const router = useRouter();
-  const [capaUrl, setCapaUrl] = useState<string | null>(null);
-
-  // Fetch album details to get cover
-  useEffect(() => {
-    const loadCapa = async () => {
-      try {
-        const albumData = await albumService.getById(album.id);
-        if (albumData.capas && albumData.capas.length > 0) {
-          const capa = albumData.capas[0];
-          const response = await albumService.getCapaUrl(album.id, capa.id);
-          setCapaUrl(response.url);
-        }
-      } catch {
-        // Silently fail - show placeholder
-      }
-    };
-    loadCapa();
-  }, [album.id]);
 
   return (
     <Card
@@ -40,10 +21,10 @@ function AlbumCard({ album }: { album: AlbumSummary }) {
       onClick={() => router.push(`/albuns/${album.id}`)}
     >
       <div className="aspect-square bg-[var(--muted)] flex items-center justify-center">
-        {capaUrl ? (
+        {album.capaUrl ? (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
-            src={capaUrl}
+            src={album.capaUrl}
             alt={`Capa de ${album.titulo}`}
             className="h-full w-full object-cover"
           />

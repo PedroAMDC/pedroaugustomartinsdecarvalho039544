@@ -36,4 +36,14 @@ public class ArtistaDetailResponse {
             : List.of();
         return response;
     }
+
+    public static ArtistaDetailResponse of(Artista artista, List<AlbumSummaryResponse> albuns) {
+        ArtistaDetailResponse response = new ArtistaDetailResponse();
+        response.id = artista.id;
+        response.nome = artista.nome;
+        response.tipo = artista.tipo;
+        response.createdAt = artista.createdAt;
+        response.albuns = albuns;
+        return response;
+    }
 }
