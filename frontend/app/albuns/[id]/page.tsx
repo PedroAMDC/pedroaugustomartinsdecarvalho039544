@@ -59,9 +59,7 @@ function CapaImage({
       try {
         const response = await albumService.getCapaUrl(albumId, capa.id);
         setUrl(response.url);
-      } catch {
-        // Silently fail
-      }
+      } catch {}
     };
     loadUrl();
   }, [albumId, capa.id]);
@@ -83,11 +81,7 @@ function CapaImage({
     <div className="group relative aspect-square overflow-hidden rounded-lg bg-muted">
       {url ? (
         /* eslint-disable-next-line @next/next/no-img-element */
-        <img
-          src={url}
-          alt={capa.originalName}
-          className="h-full w-full object-cover"
-        />
+        <img src={url} alt={capa.originalName} className="h-full w-full object-cover" />
       ) : (
         <div className="flex h-full w-full items-center justify-center">
           <Disc3 className="h-12 w-12 text-muted-foreground" />
@@ -95,12 +89,7 @@ function CapaImage({
       )}
       {onDelete && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={handleDelete}
-            disabled={isDeleting}
-          >
+          <Button variant="destructive" size="sm" onClick={handleDelete} disabled={isDeleting}>
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>
@@ -220,9 +209,7 @@ export default function AlbumDetalhesPage() {
                 <Calendar className="mr-1 h-3 w-3" />
                 {album.anoLancamento}
               </Badge>
-              <span className="text-sm text-muted-foreground">
-                Criado em {createdAt}
-              </span>
+              <span className="text-sm text-muted-foreground">Criado em {createdAt}</span>
             </div>
 
             {/* Artists */}
@@ -255,17 +242,10 @@ export default function AlbumDetalhesPage() {
         {/* Capas gallery */}
         {album.capas && album.capas.length > 1 && (
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold">
-              Todas as capas ({album.capas.length})
-            </h2>
+            <h2 className="text-xl font-semibold">Todas as capas ({album.capas.length})</h2>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {album.capas.map((capa) => (
-                <CapaImage
-                  key={capa.id}
-                  albumId={album.id}
-                  capa={capa}
-                  onDelete={fetchAlbum}
-                />
+                <CapaImage key={capa.id} albumId={album.id} capa={capa} onDelete={fetchAlbum} />
               ))}
             </div>
           </div>

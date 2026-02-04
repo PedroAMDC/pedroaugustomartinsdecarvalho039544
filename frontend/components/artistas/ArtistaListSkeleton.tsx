@@ -74,10 +74,7 @@ function TableSkeleton({ count }: { count: number }) {
   );
 }
 
-export function ArtistaListSkeleton({
-  viewMode,
-  count = 8,
-}: ArtistaListSkeletonProps) {
+export function ArtistaListSkeleton({ viewMode, count = 8 }: ArtistaListSkeletonProps) {
   if (viewMode === 'table') {
     return <TableSkeleton count={count} />;
   }

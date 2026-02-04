@@ -40,28 +40,19 @@ class AlbumService {
     const formData = new FormData();
     formData.append('file', file);
 
-    const { data } = await api.post<CapaAlbum>(
-      `/v1/albuns/${albumId}/capas`,
-      formData,
-      {
-        headers: { 'Content-Type': 'multipart/form-data' },
-        onUploadProgress: (progressEvent) => {
-          if (onProgress && progressEvent.total) {
-            const percent = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
-            onProgress(percent);
-          }
-        },
-      }
-    );
+    const { data } = await api.post<CapaAlbum>(`/v1/albuns/${albumId}/capas`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      onUploadProgress: (progressEvent) => {
+        if (onProgress && progressEvent.total) {
+          const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          onProgress(percent);
+        }
+      },
+    });
     return data;
   }
 
-  async getCapaUrl(
-    albumId: number,
-    capaId: number
-  ): Promise<CapaPresignedUrlResponse> {
+  async getCapaUrl(albumId: number, capaId: number): Promise<CapaPresignedUrlResponse> {
     const { data } = await api.get<CapaPresignedUrlResponse>(
       `/v1/albuns/${albumId}/capas/${capaId}/url`
     );

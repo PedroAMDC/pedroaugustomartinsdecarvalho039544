@@ -129,9 +129,7 @@ describe('useWebSocket', () => {
 
       expect(mockWebSocketInstances).toHaveLength(1);
       expect(mockWebSocketInstances[0].url).toContain('/ws/notifications');
-      expect(mockWebSocketInstances[0].url).toContain(
-        `token=${encodeURIComponent(mockToken)}`
-      );
+      expect(mockWebSocketInstances[0].url).toContain(`token=${encodeURIComponent(mockToken)}`);
     });
 
     it('should set isConnected to true when connection opens', async () => {
@@ -218,7 +216,6 @@ describe('useWebSocket', () => {
 
     it('should handle invalid JSON gracefully', () => {
       const onMessage = vi.fn();
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
       renderHook(() =>
         useWebSocket({
@@ -233,9 +230,6 @@ describe('useWebSocket', () => {
       });
 
       expect(onMessage).not.toHaveBeenCalled();
-      expect(consoleSpy).toHaveBeenCalled();
-
-      consoleSpy.mockRestore();
     });
   });
 

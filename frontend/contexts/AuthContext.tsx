@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  createContext,
-  useState,
-  useEffect,
-  useCallback,
-  type ReactNode,
-} from 'react';
+import { createContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import api, { getToken, setTokens, clearTokens, getRefreshToken } from '@/lib/api';
 import type { User } from '@/types/user';
 import type { LoginRequest, RegisterRequest, LoginResponse } from '@/types/api';
@@ -97,12 +91,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   const register = useCallback(
-    async (
-      nome: string,
-      email: string,
-      password: string,
-      confirmPassword: string
-    ) => {
+    async (nome: string, email: string, password: string, confirmPassword: string) => {
       const request: RegisterRequest = { nome, email, password, confirmPassword };
       const response = await api.post<LoginResponse>('/v1/auth/register', request);
       const { token, refreshToken } = response.data;

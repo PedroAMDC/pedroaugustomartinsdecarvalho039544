@@ -139,18 +139,14 @@ export default function ArtistaDetalhesPage() {
             <h1 className="text-3xl font-bold">{artista.nome}</h1>
             <div className="flex flex-wrap items-center gap-3">
               <Badge variant="secondary">{tipoLabel}</Badge>
-              <span className="text-sm text-[var(--muted-foreground)]">
-                Criado em {createdAt}
-              </span>
+              <span className="text-sm text-[var(--muted-foreground)]">Criado em {createdAt}</span>
             </div>
           </div>
         </div>
 
         {/* Albums section */}
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold">
-            Álbuns ({artista.albuns.length})
-          </h2>
+          <h2 className="text-xl font-semibold">Álbuns ({artista.albuns.length})</h2>
 
           {artista.albuns.length === 0 ? (
             <div className="rounded-lg border border-dashed p-8 text-center">

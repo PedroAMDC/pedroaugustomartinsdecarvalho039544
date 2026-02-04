@@ -26,16 +26,12 @@ describe('Pagination', () => {
     });
 
     it('returns null when totalPages is 1', () => {
-      const { container } = render(
-        <Pagination {...defaultProps} totalPages={1} totalItems={10} />
-      );
+      const { container } = render(<Pagination {...defaultProps} totalPages={1} totalItems={10} />);
       expect(container).toBeEmptyDOMElement();
     });
 
     it('returns null when totalPages is 0', () => {
-      const { container } = render(
-        <Pagination {...defaultProps} totalPages={0} totalItems={0} />
-      );
+      const { container } = render(<Pagination {...defaultProps} totalPages={0} totalItems={0} />);
       expect(container).toBeEmptyDOMElement();
     });
   });

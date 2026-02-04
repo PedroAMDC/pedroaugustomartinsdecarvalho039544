@@ -8,18 +8,14 @@ class RateLimitEventEmitter {
   onRateLimit(callback: RateLimitCallback): () => void {
     this.rateLimitCallbacks.push(callback);
     return () => {
-      this.rateLimitCallbacks = this.rateLimitCallbacks.filter(
-        (cb) => cb !== callback
-      );
+      this.rateLimitCallbacks = this.rateLimitCallbacks.filter((cb) => cb !== callback);
     };
   }
 
   onHeadersUpdate(callback: HeadersCallback): () => void {
     this.headersCallbacks.push(callback);
     return () => {
-      this.headersCallbacks = this.headersCallbacks.filter(
-        (cb) => cb !== callback
-      );
+      this.headersCallbacks = this.headersCallbacks.filter((cb) => cb !== callback);
     };
   }
 

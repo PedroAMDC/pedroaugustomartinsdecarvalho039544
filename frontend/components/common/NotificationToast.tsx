@@ -6,10 +6,7 @@ import { Disc3, X } from 'lucide-react';
 import Link from 'next/link';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { useAuth } from '@/hooks/useAuth';
-import type {
-  WebSocketMessage,
-  NewAlbumNotificationData,
-} from '@/types/notification';
+import type { WebSocketMessage, NewAlbumNotificationData } from '@/types/notification';
 import { MESSAGE_TYPES } from '@/types/notification';
 
 interface NotificationProviderProps {
@@ -32,9 +29,7 @@ function AlbumNotificationContent({
         <p className="text-sm font-medium">Novo album cadastrado!</p>
         <p className="text-sm text-muted-foreground">{data.titulo}</p>
         {data.artistas.length > 0 && (
-          <p className="text-xs text-muted-foreground">
-            {data.artistas.join(', ')}
-          </p>
+          <p className="text-xs text-muted-foreground">{data.artistas.join(', ')}</p>
         )}
         <Link
           href={`/albuns/${data.id}/editar`}
@@ -57,13 +52,10 @@ function AlbumNotificationContent({
 }
 
 export function showAlbumNotification(data: NewAlbumNotificationData) {
-  toast.custom(
-    (id) => <AlbumNotificationContent data={data} toastId={id} />,
-    {
-      duration: 5000,
-      position: 'top-right',
-    }
-  );
+  toast.custom((id) => <AlbumNotificationContent data={data} toastId={id} />, {
+    duration: 5000,
+    position: 'top-right',
+  });
 }
 
 export function NotificationProvider({ children }: NotificationProviderProps) {
