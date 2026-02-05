@@ -33,10 +33,14 @@ public class StorageServiceTest {
     private static final String TEST_BUCKET = "test-bucket";
     private static final int TEST_EXPIRY_SECONDS = 1800;
 
+    private MinioClient presignedUrlClient;
+
     @BeforeEach
     void setUp() throws Exception {
+        presignedUrlClient = mock(MinioClient.class);
         setField(storageService, "bucket", TEST_BUCKET);
         setField(storageService, "presignedUrlExpirySeconds", TEST_EXPIRY_SECONDS);
+        setField(storageService, "presignedUrlClient", presignedUrlClient);
     }
 
     private void setField(Object target, String fieldName, Object value) throws Exception {
@@ -169,9 +173,9 @@ public class StorageServiceTest {
     @Test
     void generatePresignedUrl_withValidObjectKey_shouldReturnUrl() throws Exception {
         String objectKey = "uuid_test-image.jpg";
-        String expectedUrl = "http://minio:9000/test-bucket/uuid_test-image.jpg?token=abc123";
+        String expectedUrl = "http://localhost:9000/test-bucket/uuid_test-image.jpg?token=abc123";
 
-        when(minioClient.getPresignedObjectUrl(any(GetPresignedObjectUrlArgs.class)))
+        when(presignedUrlClient.getPresignedObjectUrl(any(GetPresignedObjectUrlArgs.class)))
             .thenReturn(expectedUrl);
 
         String url = storageService.generatePresignedUrl(objectKey);
@@ -179,7 +183,7 @@ public class StorageServiceTest {
         assertEquals(expectedUrl, url);
 
         ArgumentCaptor<GetPresignedObjectUrlArgs> captor = ArgumentCaptor.forClass(GetPresignedObjectUrlArgs.class);
-        verify(minioClient).getPresignedObjectUrl(captor.capture());
+        verify(presignedUrlClient).getPresignedObjectUrl(captor.capture());
 
         GetPresignedObjectUrlArgs capturedArgs = captor.getValue();
         assertEquals(TEST_BUCKET, capturedArgs.bucket());
@@ -188,7 +192,7 @@ public class StorageServiceTest {
 
     @Test
     void generatePresignedUrl_whenMinioFails_shouldThrowStorageException() throws Exception {
-        when(minioClient.getPresignedObjectUrl(any(GetPresignedObjectUrlArgs.class)))
+        when(presignedUrlClient.getPresignedObjectUrl(any(GetPresignedObjectUrlArgs.class)))
             .thenThrow(new RuntimeException("Connection refused"));
 
         StorageException exception = assertThrows(
