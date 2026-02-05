@@ -26,6 +26,7 @@ public class MinioTestResource implements QuarkusTestResourceLifecycleManager {
 
         Map<String, String> config = new HashMap<>();
         config.put("minio.endpoint", minioContainer.getS3URL());
+        config.put("minio.public-endpoint", minioContainer.getS3URL());
         config.put("minio.access-key", ACCESS_KEY);
         config.put("minio.secret-key", SECRET_KEY);
         config.put("minio.bucket", BUCKET_NAME);

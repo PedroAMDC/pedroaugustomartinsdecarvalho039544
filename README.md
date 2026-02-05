@@ -125,7 +125,8 @@ Todas as variaveis estao documentadas no arquivo `.env.example`. A tabela abaixo
 
 | Variavel | Descricao | Valor padrao |
 |----------|-----------|--------------|
-| `MINIO_ENDPOINT` | URL do servico MinIO | `http://minio:9000` |
+| `MINIO_ENDPOINT` | URL interna do servico MinIO (Docker) | `http://minio:9000` |
+| `MINIO_PUBLIC_ENDPOINT` | URL publica do MinIO (acessivel pelo browser) | `http://localhost:9000` |
 | `MINIO_ROOT_USER` | Usuario root do MinIO | `minioadmin` |
 | `MINIO_ROOT_PASSWORD` | Senha root do MinIO | `minioadmin123` |
 | `MINIO_BUCKET` | Nome do bucket para capas | `albuns-capas` |
@@ -513,6 +514,13 @@ O banco é populado automaticamente com os seguintes dados:
 - Lazy loading nativo
 - Excelente integração com TypeScript
 
+### Por que React Context + Hooks ao inves de ObjectBehavior?
+- React Context e Hooks sao nativos do ecossistema React, sem dependencias externas
+- ObjectBehavior e voltado para padroes de desenvolvimento mobile (Android/iOS), nao para aplicacoes web React
+- O equivalente semantico no React e o proprio Context API + custom Hooks, que oferece reatividade e gerenciamento de estado de forma idiomatica
+- O Facade Pattern aplicado na camada de servicos (`lib/`) abstrai as chamadas de API, mantendo os componentes desacoplados da logica de negocio
+- TypeScript oferece tipagem completa para Context e Hooks sem configuracao adicional
+
 ### Por que MinIO?
 - API 100% compatível com S3
 - Fácil de executar localmente via Docker
@@ -586,7 +594,7 @@ feature/* ou fix/*  -->  develop  -->  main
 
 Este projeto foi desenvolvido seguindo praticas ageis:
 
-- **Kanban Board:** Backlog organizado em [GitHub Projects](../../projects) com colunas To Do, In Progress e Done
+- **Kanban Board:** Backlog organizado em [GitHub Projects](https://github.com/PedroAMDC/pedroaugustomartinsdecarvalho039544/projects) com colunas To Do, In Progress e Done
 - **Tasks incrementais:** Cada funcionalidade foi quebrada em tasks pequenas e bem definidas com criterios de aceite claros
 - **Commits semanticos:** Historico de commits organizado e descritivo
 - **Feature branches:** Cada task desenvolvida em branch isolada com merge via Pull Request
