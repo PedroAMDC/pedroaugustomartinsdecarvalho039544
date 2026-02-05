@@ -7,6 +7,7 @@ import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
 import io.minio.http.Method;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -31,8 +32,28 @@ public class StorageService {
     @ConfigProperty(name = "minio.bucket")
     String bucket;
 
+    @ConfigProperty(name = "minio.public-endpoint")
+    String publicEndpoint;
+
+    @ConfigProperty(name = "minio.access-key")
+    String accessKey;
+
+    @ConfigProperty(name = "minio.secret-key")
+    String secretKey;
+
     @ConfigProperty(name = "minio.presigned-url-expiry-seconds", defaultValue = "1800")
     int presignedUrlExpirySeconds;
+
+    private MinioClient presignedUrlClient;
+
+    @PostConstruct
+    void init() {
+        presignedUrlClient = MinioClient.builder()
+            .endpoint(publicEndpoint)
+            .credentials(accessKey, secretKey)
+            .region("us-east-1")
+            .build();
+    }
 
     public String uploadFile(InputStream inputStream, String filename, String contentType, long size) {
         validateImageType(contentType);
@@ -57,7 +78,7 @@ public class StorageService {
 
     public String generatePresignedUrl(String objectKey) {
         try {
-            return minioClient.getPresignedObjectUrl(
+            return presignedUrlClient.getPresignedObjectUrl(
                 GetPresignedObjectUrlArgs.builder()
                     .method(Method.GET)
                     .bucket(bucket)
