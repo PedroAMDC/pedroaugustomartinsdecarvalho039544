@@ -514,11 +514,11 @@ O banco é populado automaticamente com os seguintes dados:
 - Lazy loading nativo
 - Excelente integração com TypeScript
 
-### Por que React Context + Hooks ao inves de ObjectBehavior?
-- React Context e Hooks sao nativos do ecossistema React, sem dependencias externas
-- ObjectBehavior e voltado para padroes de desenvolvimento mobile (Android/iOS), nao para aplicacoes web React
-- O equivalente semantico no React e o proprio Context API + custom Hooks, que oferece reatividade e gerenciamento de estado de forma idiomatica
-- O Facade Pattern aplicado na camada de servicos (`lib/`) abstrai as chamadas de API, mantendo os componentes desacoplados da logica de negocio
+### Por que React Context + Hooks ao inves de BehaviorSubject?
+- BehaviorSubject e um conceito do RxJS, nativo do ecossistema Angular
+- No React, o equivalente idiomatico e o Context API + custom Hooks, que oferece reatividade e gerenciamento de estado de forma nativa, sem dependencias externas
+- Os services em `lib/` implementam o Facade Pattern, abstraindo as chamadas de API e mantendo os componentes desacoplados da logica de negocio
+- O `RateLimitEventEmitter` implementa o padrao Observer (subscribe/emit/unsubscribe), equivalente funcional ao BehaviorSubject
 - TypeScript oferece tipagem completa para Context e Hooks sem configuracao adicional
 
 ### Por que MinIO?
