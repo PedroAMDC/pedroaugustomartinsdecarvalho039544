@@ -23,6 +23,6 @@ public class RegisterRequest {
     public String confirmPassword;
 
     @NotBlank
-    @Schema(description = "User display name", examples = {"Pedro Augusto"})
+    @Schema(description = "User display name", examples = {"John Doe"})
     public String nome;
 }
