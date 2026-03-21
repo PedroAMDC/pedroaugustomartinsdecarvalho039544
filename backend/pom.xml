@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
 
     <name>Artistas e Álbuns API</name>
-    <description>API REST para gerenciamento de Artistas e Álbuns - Technical Assessment</description>
+    <description>REST API for managing Artists and Albums</description>
 
     <properties>
         <compiler-plugin.version>3.13.0</compiler-plugin.version>
